@@ -77,6 +77,23 @@ public class TramsOperationsRestController {
     }
 
     /**
+     * Return all departures for this stop on the supplied date.
+     * @param stopName a <code>String</code> containing the name of the stop to retrieve departures from.
+     * @param date a <code>String</code> containing the date in format YYYY-mm-dd.
+     * @return a <code>List</code> of <code>StopDeparture</code> objects which may be null if the stop departure was not found or there
+     * are no departures on this date.
+     */
+    @GetMapping("/departuresByDate")
+    @CrossOrigin
+    @ResponseBody
+    @ApiOperation(value = "Get all departures for a particualar date and stop", notes="Return all departures" +
+            " for this stop and date.")
+    @ApiResponses(value = {@ApiResponse(code=200,message="Successfully returned departures")})
+    public List<StopTimeModel> getDeparturesByDate (final String stopName, final String date ) {
+        return stopTimeService.getDeparturesByDate(stopName, date);
+    }
+
+    /**
      * Return all routes currently stored in the database.
      * @return a <code>List</code> of <code>RouteModel</code> objects which may be null if there are no routes in the database.
      */

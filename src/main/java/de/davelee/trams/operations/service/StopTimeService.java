@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -110,6 +111,30 @@ public class StopTimeService {
 
         //Only show next 3 stop times and remove.
         return filteredStopTimeModels.stream().limit(3).collect(Collectors.toList());
+    }
+
+    /**
+     * Return all stop time models for this stop with a departure today.
+     * @param stopName a <code>String</code> containing the name of the stop to retrieve stop times for.
+     * @param date a <code>String</code> containing the date to retrieve stop times for in format yyyy-MM-dd.
+     * @return a <code>List</code> of <code>StopTimeModel</code> objects which may be null if the stop time models were
+     * not found or there are no stop time models on this date.
+     */
+    public List<StopTimeModel> getDeparturesByDate ( final String stopName, final String date ) {
+        //Set the date as a local date
+        LocalDate departureDate = LocalDate.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        //Return the stop times between now and midnight with the filter criteria.
+        return stopTimeRepository.findByStopName(stopName).stream()
+                //Filter stop times which do not run on this day.
+                .filter(stopTimeModel -> stopTimeModel.getOperatingDays().contains(departureDate.getDayOfWeek()))
+                //Filter stop times that are before the valid from date.
+                .filter(stopTimeModel -> stopTimeModel.getValidFromDate().isBefore(departureDate))
+                //Filter remove stop times are after the valid to date.
+                .filter(stopTimeModel -> stopTimeModel.getValidToDate().isAfter(departureDate))
+                //Sort the stop times by time.
+                .sorted(Comparator.comparing(StopTimeModel::getDepartureTime))
+                //Collect list as output.
+                .collect(Collectors.toList());
     }
 
     /**

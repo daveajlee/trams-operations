@@ -95,6 +95,28 @@ public class TramsOperationsRestControllerTest {
     }
 
     /**
+     * Test the departure date endpoint of this controller.
+     */
+    @Test
+    public void testDeparturesDateEndpoints() {
+        Mockito.when(stopTimeService.getDeparturesByDate(anyString(), anyString())).thenReturn(Lists.newArrayList(StopTimeModel.builder()
+                .arrivalTime(LocalTime.of(22,11))
+                .departureTime(LocalTime.of(22,13))
+                .destination("Greenfield")
+                .id(1)
+                .journeyNumber("101")
+                .operatingDays(Arrays.asList(DayOfWeek.MONDAY, DayOfWeek.TUESDAY, DayOfWeek.WEDNESDAY, DayOfWeek.THURSDAY, DayOfWeek.FRIDAY, DayOfWeek.SATURDAY, DayOfWeek.SUNDAY))
+                .routeNumber("405A")
+                .stopName("Lakeside")
+                .validFromDate(LocalDate.of(2020,12,12))
+                .validToDate(LocalDate.of(2021,12,11))
+                .build()));
+        List<StopTimeModel> stopTimeModelList = controller.getDeparturesByDate("Lakeside", "2021-04-10");
+        assertEquals(1, stopTimeModelList.size());
+        assertEquals("101", stopTimeModelList.get(0).getJourneyNumber());
+    }
+
+    /**
      * Test the file upload endpoint of this controller.
      */
     @Test
