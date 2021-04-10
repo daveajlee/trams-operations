@@ -3,7 +3,7 @@ package de.davelee.trams.operations.controller;
 import de.davelee.trams.operations.model.RouteModel;
 import de.davelee.trams.operations.model.StopModel;
 import de.davelee.trams.operations.model.StopTimeModel;
-import de.davelee.trams.operations.request.ImportGtfsZipRequest;
+import de.davelee.trams.operations.request.ImportZipRequest;
 import de.davelee.trams.operations.service.*;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.Test;
@@ -100,17 +100,19 @@ public class TramsOperationsRestControllerTest {
     @Test
     public void testHandleFileUpload() {
         //First of all test the happy case that it works as planned.
-        ImportGtfsZipRequest importGtfsZipRequest = new ImportGtfsZipRequest();
-        importGtfsZipRequest.setZipFile(new MockMultipartFile("test", new byte[8]));
-        importGtfsZipRequest.setRoutesToImport("1A,2B");
-        Mockito.when(fileSystemStorageService.store(importGtfsZipRequest.getZipFile())).thenReturn("testFolder");
+        ImportZipRequest importZipRequest = new ImportZipRequest();
+        importZipRequest.setZipFile(new MockMultipartFile("test", new byte[8]));
+        importZipRequest.setFileFormat("General Transit Feed Specification (GTFS)");
+        importZipRequest.setRoutesToImport("1A,2B");
+        Mockito.when(fileSystemStorageService.store(importZipRequest.getZipFile())).thenReturn("testFolder");
         Mockito.when(importGTFSDataService.readGTFSFile("testFolder", Lists.newArrayList("1A", "2B"))).thenReturn(true);
-        ResponseEntity<Void> uploadResponse = controller.handleFileUpload(importGtfsZipRequest);
+        ResponseEntity<Void> uploadResponse = controller.handleFileUpload(importZipRequest);
         assertEquals(HttpStatus.OK, uploadResponse.getStatusCode());
         //Second test the case where file could not be loaded.
-        ImportGtfsZipRequest importGtfsZipBadRequest = new ImportGtfsZipRequest();
+        ImportZipRequest importGtfsZipBadRequest = new ImportZipRequest();
         importGtfsZipBadRequest.setZipFile(new MockMultipartFile("test", new byte[8]));
         importGtfsZipBadRequest.setRoutesToImport("3C,4D");
+        importGtfsZipBadRequest.setFileFormat("General Transit Feed Specification (GTFS)");
         Mockito.when(fileSystemStorageService.store(importGtfsZipBadRequest.getZipFile())).thenReturn("testBadFolder");
         Mockito.when(importGTFSDataService.readGTFSFile("testFolder", Lists.newArrayList("3C", "3D"))).thenReturn(false);
         ResponseEntity<Void> uploadBadResponse = controller.handleFileUpload(importGtfsZipBadRequest);
@@ -146,14 +148,6 @@ public class TramsOperationsRestControllerTest {
         List<StopModel> stopModelList = controller.getStops();
         assertEquals(1, stopModelList.size());
         assertEquals("Greenfield", stopModelList.get(0).getName());
-    }
-
-    /**
-     * Test the thymeleaf page endpoint of this controller.
-     */
-    @Test
-    public void testUploadEndpoint() {
-        assertEquals("uploadForm", controller.uploadFile(null));
     }
 
 }

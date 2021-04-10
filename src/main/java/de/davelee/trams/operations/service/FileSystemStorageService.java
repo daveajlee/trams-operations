@@ -8,10 +8,7 @@ import org.springframework.util.FileSystemUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
+import java.nio.file.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -77,6 +74,8 @@ public class FileSystemStorageService {
                 Files.copy(inputStream, destinationFile,
                         StandardCopyOption.REPLACE_EXISTING);
                 return extractZipFile(destinationFile.toString());
+            } catch ( FileAlreadyExistsException fileAlreadyExistsException ) {
+                return extractZipFile(destinationFile.toString());
             }
         }
         catch (IOException e) {
@@ -93,7 +92,7 @@ public class FileSystemStorageService {
     private String extractZipFile(final String zipFilePath) {
         File destDir = new File(zipFilePath.replace(".zip", ""));
         try {
-            if ( !destDir.mkdir() ) {
+            if ( !destDir.mkdir() && !destDir.exists() ) {
                 throw new StorageException("Failed to create directory to contain extracted files");
             }
             byte[] buffer = new byte[1024];
@@ -102,13 +101,13 @@ public class FileSystemStorageService {
             while (zipEntry != null) {
                 File newFile = new File(destDir + "/" + zipEntry.getName());
                 if (zipEntry.isDirectory()) {
-                    if (!newFile.isDirectory() && !newFile.mkdirs()) {
+                    if (!newFile.isDirectory() && !newFile.mkdirs() && !newFile.exists()) {
                         throw new IOException("Failed to create directory " + newFile);
                     }
                 } else {
                     // fix for Windows-created archives
                     File parent = newFile.getParentFile();
-                    if (!parent.isDirectory() && !parent.mkdirs()) {
+                    if (!parent.isDirectory() && !parent.mkdirs() && !parent.exists()) {
                         throw new IOException("Failed to create directory " + parent);
                     }
 

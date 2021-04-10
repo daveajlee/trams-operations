@@ -3,7 +3,7 @@ package de.davelee.trams.operations.controller;
 import de.davelee.trams.operations.model.RouteModel;
 import de.davelee.trams.operations.model.StopModel;
 import de.davelee.trams.operations.model.StopTimeModel;
-import de.davelee.trams.operations.request.ImportGtfsZipRequest;
+import de.davelee.trams.operations.request.ImportZipRequest;
 import de.davelee.trams.operations.service.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -11,17 +11,17 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * This class provides REST endpoints which can be called by other clients wishing to communicate with the Trams Operations Module.
  * @author Dave Lee
  */
-@Controller
+@RestController
 @Api(value="/trams-operations")
 @RequestMapping(value="/trams-operations")
 public class TramsOperationsRestController {
@@ -31,6 +31,9 @@ public class TramsOperationsRestController {
 
     @Autowired
     private ImportGTFSDataService gtfsDataService;
+
+    @Autowired
+    private ImportCSVDataService csvDataService;
 
     @Autowired
     private RouteService routeService;
@@ -100,34 +103,32 @@ public class TramsOperationsRestController {
     }
 
     /**
-     * Upload a GTFS zip file containing a zip file fulfilling the GTFS specification and optionally a list of routes
-     * to import which may be null if all routes should be imported.
+     * Upload a zip file containing files either fulfilling the GTFS specification or the CSV specification.
+     * Optionally a list of routes can be provided which should be imported and may be null if all routes should be imported.
+     * Optionally a valid from and valid to date can also be provided (which are only read in the csv import).
      * The GTFS specification is specified here: https://developers.google.com/transit/gtfs
-     * @param importGtfsZipRequest a <code>ImportGtfsZipRequest</code> containing the zip file and list of routes to import which may be null.
+     * @param importZipRequest a <code>ImportZipRequest</code> containing the zip file, list of routes to import
+     *                            and valid from and valid to dates.
      * @return a <code>ResponseEntity</code> object which returns the http status of this method if it was successful or not.
      */
-    @PostMapping("/uploadGTFSFile")
+    @PostMapping("/uploadDataFile")
     @CrossOrigin
-    @ApiOperation(value = "Upload GTFS file", notes="Upload a GTFS Zip file to TraMS")
-    @ApiResponses(value = {@ApiResponse(code=200,message="Successfully imported GTFS Data"), @ApiResponse(code=422,message="Entity could not be processed because zip file was not valid")})
-    public ResponseEntity<Void> handleFileUpload(@ModelAttribute final ImportGtfsZipRequest importGtfsZipRequest) {
-        String folderName = fileSystemStorageService.store(importGtfsZipRequest.getZipFile());
-        List<String> routesToImport =  importGtfsZipRequest.getRoutesToImport() != null ?
-                                        Arrays.asList(importGtfsZipRequest.getRoutesToImport().split(",")) : new ArrayList<>();
-        if ( gtfsDataService.readGTFSFile(folderName, routesToImport) ) {
-            return ResponseEntity.ok().build();
+    @ApiOperation(value = "Upload Data file", notes="Upload a GTFS or CSV Zip file to TraMS")
+    @ApiResponses(value = {@ApiResponse(code=200,message="Successfully imported GTFS/CSV Data"), @ApiResponse(code=422,message="Entity could not be processed because zip file was not valid")})
+    public ResponseEntity<Void> handleFileUpload(@ModelAttribute final ImportZipRequest importZipRequest) {
+        String folderName = fileSystemStorageService.store(importZipRequest.getZipFile());
+        List<String> routesToImport =  importZipRequest.getRoutesToImport() != null ?
+                                        Arrays.asList(importZipRequest.getRoutesToImport().split(",")) : new ArrayList<>();
+        if ( importZipRequest.getFileFormat().contentEquals("General Transit Feed Specification (GTFS)")) {
+            if (gtfsDataService.readGTFSFile(folderName, routesToImport)) {
+                return ResponseEntity.ok().build();
+            }
+        } else if ( importZipRequest.getFileFormat().contentEquals("Comma Separated Value (CSV)")) {
+            if (csvDataService.readCSVFile(folderName, importZipRequest.getValidFromDate(), importZipRequest.getValidToDate())) {
+                return ResponseEntity.ok().build();
+            }
         }
         return ResponseEntity.unprocessableEntity().build();
-    }
-
-    /**
-     * This is a temporary method which allows a file to be uploaded through Thymeleaf until the final UI in Angular is available.
-     * @param model a <code>Model</code> which can create attributes to be passed to Thymeleaf but is currently not read by Thymeleaf.
-     * @return a <code>String</code> which contains the name of the HTML file to be displayed by Thymeleaf.
-     */
-    @GetMapping("/uploadFile")
-    public String uploadFile(final Model model) {
-        return "uploadForm";
     }
 
 }

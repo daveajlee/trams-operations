@@ -17,11 +17,15 @@ public class ImportGtfsZipRequestTest {
      */
     @Test
     public void testCreateRequest( ) {
-        ImportGtfsZipRequest importGtfsZipRequest = new ImportGtfsZipRequest();
-        importGtfsZipRequest.setZipFile(new MockMultipartFile("test", new byte[8]));
-        importGtfsZipRequest.setRoutesToImport("1A,2B");
-        assertNotNull(importGtfsZipRequest.getZipFile());
-        assertEquals("1A,2B", importGtfsZipRequest.getRoutesToImport());
+        ImportZipRequest importZipRequest = new ImportZipRequest();
+        importZipRequest.setZipFile(new MockMultipartFile("test", new byte[8]));
+        importZipRequest.setRoutesToImport("1A,2B");
+        importZipRequest.setValidFromDate("01.01.2021");
+        importZipRequest.setValidToDate("31.12.2021");
+        assertNotNull(importZipRequest.getZipFile());
+        assertEquals("1A,2B", importZipRequest.getRoutesToImport());
+        assertEquals("01.01.2021", importZipRequest.getValidFromDate());
+        assertEquals("31.12.2021", importZipRequest.getValidToDate());
     }
 
 }
