@@ -229,7 +229,7 @@ public class ImportCSVDataService {
                 operatingDays.add(DayOfWeek.SATURDAY);
             }
             //Sundays
-            if (operatingDay.contentEquals("S")) {
+            if (operatingDay.contentEquals("SU")) {
                 operatingDays.add(DayOfWeek.SUNDAY);
             }
         }
