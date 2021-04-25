@@ -21,16 +21,9 @@ public class VehicleModelTest {
     @Test
     public void testBuilderGetterSetterToString ( ) {
         //Test builder
-        VehicleModel vehicleModel = VehicleModel.builder()
-                .modelName("BendyBus 2000")
-                .deliveryDate(LocalDate.of(2021,3,25))
-                .inspectionDate(LocalDate.of(2021,4,25))
-                .livery("Green with black slide")
-                .seatingCapacity(50)
-                .standingCapacity(80)
-                .vehicleStatus(VehicleStatus.INSPECTED)
-                .id(new VehicleModel.VehicleUniqueIdentifier("213", "Lee Buses"))
-                .build();
+        VehicleModel vehicleModel = new VehicleModel(new VehicleModel.VehicleUniqueIdentifier("213", "Lee Buses"),
+                LocalDate.of(2021,3,25), LocalDate.of(2021,4,25), 50, 80,
+                "BendyBus 2000", "Green with black slide", VehicleStatus.INSPECTED);
         //Verify the builder functionality through getter methods
         assertEquals("BendyBus 2000", vehicleModel.getModelName());
         assertEquals(LocalDate.of(2021,3,25), vehicleModel.getDeliveryDate());

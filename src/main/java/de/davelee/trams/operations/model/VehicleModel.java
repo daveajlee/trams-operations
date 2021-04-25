@@ -12,9 +12,9 @@ import java.time.LocalDate;
  * a livery and a status.
  * @author Dave Lee
  */
-@Builder
 @Getter
 @Setter
+@AllArgsConstructor
 @ToString
 public class VehicleModel {
 
