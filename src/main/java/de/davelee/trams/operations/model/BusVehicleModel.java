@@ -24,7 +24,8 @@ public class BusVehicleModel extends VehicleModel {
     /**
      * Workaround for lombok problem of not being able to use builder pattern properly with inheritance. Therefore
      * helper all parameter constructor for the builder pattern.
-     * @param id a <code>VehicleUniqueIdentifer</code> object containing fleet number and company
+     * @param fleetNumber a <code>String</code> containing the fleet number of the vehicle
+     * @param company a <code>String</code> containing the name of the company that the vehicle belongs to.
      * @param deliveryDate a <code>LocalDate</code> object containing the delivery date of vehicle
      * @param inspectionDate a <code>LocalDate</code> object containing the inspection date of vehicle
      * @param seatingCapacity a <code>int</code> containing the seating capacity of the vehicle
@@ -35,10 +36,10 @@ public class BusVehicleModel extends VehicleModel {
      * @param registrationNumber a <code>String</code> containing the registration number of this bus
      */
     @Builder
-    public BusVehicleModel (final VehicleUniqueIdentifier id, final LocalDate deliveryDate, final LocalDate inspectionDate,
+    public BusVehicleModel (final String fleetNumber, final String company, final LocalDate deliveryDate, final LocalDate inspectionDate,
                             final int seatingCapacity, final int standingCapacity, final String modelName, final String livery,
                             final VehicleStatus vehicleStatus, final String registrationNumber ) {
-        super(id, deliveryDate, inspectionDate, seatingCapacity, standingCapacity, modelName, livery, vehicleStatus);
+        super(fleetNumber, company, deliveryDate, inspectionDate, seatingCapacity, standingCapacity, modelName, livery, vehicleStatus);
         this.registrationNumber = registrationNumber;
     }
 

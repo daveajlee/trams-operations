@@ -21,7 +21,7 @@ public class VehicleModelTest {
     @Test
     public void testBuilderGetterSetterToString ( ) {
         //Test builder
-        VehicleModel vehicleModel = new VehicleModel(new VehicleModel.VehicleUniqueIdentifier("213", "Lee Buses"),
+        VehicleModel vehicleModel = new VehicleModel("213", "Lee Buses",
                 LocalDate.of(2021,3,25), LocalDate.of(2021,4,25), 50, 80,
                 "BendyBus 2000", "Green with black slide", VehicleStatus.INSPECTED);
         //Verify the builder functionality through getter methods
@@ -32,10 +32,10 @@ public class VehicleModelTest {
         assertEquals(50, vehicleModel.getSeatingCapacity());
         assertEquals(80, vehicleModel.getStandingCapacity());
         assertEquals(VehicleStatus.INSPECTED, vehicleModel.getVehicleStatus());
-        assertEquals("213", vehicleModel.getId().getFleetNumber());
-        assertEquals("Lee Buses", vehicleModel.getId().getCompany());
+        assertEquals("213", vehicleModel.getFleetNumber());
+        assertEquals("Lee Buses", vehicleModel.getCompany());
         //Verify the toString method
-        assertEquals("VehicleModel(id=VehicleModel.VehicleUniqueIdentifier(fleetNumber=213, company=Lee Buses), deliveryDate=2021-03-25, inspectionDate=2021-04-25, seatingCapacity=50, standingCapacity=80, modelName=BendyBus 2000, livery=Green with black slide, vehicleStatus=INSPECTED)", vehicleModel.toString());
+        assertEquals("VehicleModel(fleetNumber=213, company=Lee Buses, deliveryDate=2021-03-25, inspectionDate=2021-04-25, seatingCapacity=50, standingCapacity=80, modelName=BendyBus 2000, livery=Green with black slide, vehicleStatus=INSPECTED)", vehicleModel.toString());
         //Now use the setter methods
         vehicleModel.setModelName("BendyBus 2000 Plus");
         vehicleModel.setDeliveryDate(LocalDate.of(2021,3,31));
@@ -44,9 +44,10 @@ public class VehicleModelTest {
         vehicleModel.setSeatingCapacity(54);
         vehicleModel.setStandingCapacity(82);
         vehicleModel.setVehicleStatus(VehicleStatus.PURCHASED);
-        vehicleModel.setId(new VehicleModel.VehicleUniqueIdentifier("214", "Lee Buses 2"));
+        vehicleModel.setFleetNumber("214");
+        vehicleModel.setCompany("Lee Buses 2");
         //And verify again through the toString methods
-        assertEquals("VehicleModel(id=VehicleModel.VehicleUniqueIdentifier(fleetNumber=214, company=Lee Buses 2), deliveryDate=2021-03-31, inspectionDate=2021-04-05, seatingCapacity=54, standingCapacity=82, modelName=BendyBus 2000 Plus, livery=Red with plus logo, vehicleStatus=PURCHASED)", vehicleModel.toString());
+        assertEquals("VehicleModel(fleetNumber=214, company=Lee Buses 2, deliveryDate=2021-03-31, inspectionDate=2021-04-05, seatingCapacity=54, standingCapacity=82, modelName=BendyBus 2000 Plus, livery=Red with plus logo, vehicleStatus=PURCHASED)", vehicleModel.toString());
     }
 
 }

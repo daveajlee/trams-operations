@@ -1,14 +1,11 @@
 package de.davelee.trams.operations.model;
 
 import lombok.*;
-import org.springframework.data.annotation.Id;
-
-import java.io.Serializable;
 import java.time.LocalDate;
 
 /**
- * This class represents a vehicle. A vehicle can contain an id, a fleet number and company (which in combination
- * must be unique), a delivery date, an inspection date, a seating capacity, a standing capacity, a model name,
+ * This class represents a vehicle. A vehicle can contain a fleet number and company,
+ * a delivery date, an inspection date, a seating capacity, a standing capacity, a model name,
  * a livery and a status.
  * @author Dave Lee
  */
@@ -19,29 +16,14 @@ import java.time.LocalDate;
 public class VehicleModel {
 
     /**
-     * The id of the vehicle which is a combination of fleet number and company.
+     * The fleet number of this vehicle.
      */
-    @Id
-    private VehicleUniqueIdentifier id;
+    private String fleetNumber;
 
     /**
-     * Private helper class to implement the composite key for fleet number and company.
+     * The company that owns this vehicle.
      */
-    @Getter
-    @Setter
-    @AllArgsConstructor
-    @ToString
-    static class VehicleUniqueIdentifier implements Serializable {
-        /**
-         * The fleet number of this vehicle.
-         */
-        private String fleetNumber;
-
-        /**
-         * The company that owns this vehicle.
-         */
-        private String company;
-    }
+    private String company;
 
     /**
      * The date that the vehicle was delivered to its current company.

@@ -1,8 +1,6 @@
 package de.davelee.trams.operations.controller;
 
-import de.davelee.trams.operations.model.RouteModel;
-import de.davelee.trams.operations.model.StopModel;
-import de.davelee.trams.operations.model.StopTimeModel;
+import de.davelee.trams.operations.model.*;
 import de.davelee.trams.operations.request.ImportZipRequest;
 import de.davelee.trams.operations.service.*;
 import io.swagger.annotations.Api;
@@ -13,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -43,6 +42,9 @@ public class TramsOperationsRestController {
 
     @Autowired
     private FileSystemStorageService fileSystemStorageService;
+
+    @Autowired
+    private VehicleService vehicleService;
 
     /**
      * Return the next 3 departures for this stop within the next 2 hours.
@@ -146,6 +148,61 @@ public class TramsOperationsRestController {
             }
         }
         return ResponseEntity.unprocessableEntity().build();
+    }
+
+    /**
+     * Temporary endpoint to add test data which will be removed as soon as data can be added through normal endpoints.
+     * @return a <code>ResponseEntity</code> object which returns the http status of this method if it was successful or not.
+     */
+    @GetMapping("/testdata")
+    @ApiOperation(value = "Populate test data", notes="returns nothing")
+    @ApiResponses(value = {@ApiResponse(code=200,message="Successfully added test data")})
+    public ResponseEntity<Void> addTestData ( ) {
+        //Create test bus
+        BusVehicleModel busVehicleModel = BusVehicleModel.builder()
+                .registrationNumber("W234DHDF")
+                .modelName("BendyBus 2000")
+                .deliveryDate(LocalDate.of(2021,3,25))
+                .inspectionDate(LocalDate.of(2021,4,25))
+                .livery("Green with black slide")
+                .seatingCapacity(50)
+                .standingCapacity(80)
+                .vehicleStatus(VehicleStatus.INSPECTED)
+                .fleetNumber("213")
+                .company("Lee Buses")
+                .build();
+        //Create test train
+        TrainVehicleModel trainVehicleModel = TrainVehicleModel.builder()
+                .powerMode(TrainPowerMode.DIESEL)
+                .modelName("Train 2000 Di")
+                .deliveryDate(LocalDate.of(2021,3,25))
+                .inspectionDate(LocalDate.of(2021,4,25))
+                .livery("Green with black slide")
+                .seatingCapacity(50)
+                .standingCapacity(80)
+                .vehicleStatus(VehicleStatus.INSPECTED)
+                .fleetNumber("2130")
+                .company("Lee Trains")
+                .build();
+        //Create test tram
+        TramVehicleModel tramVehicleModel = TramVehicleModel.builder()
+                .isBidirectional(true)
+                .modelName("Tram 2000 Bi")
+                .deliveryDate(LocalDate.of(2021,3,25))
+                .inspectionDate(LocalDate.of(2021,4,25))
+                .livery("Green with black slide")
+                .seatingCapacity(50)
+                .standingCapacity(80)
+                .vehicleStatus(VehicleStatus.INSPECTED)
+                .fleetNumber("2310")
+                .company("Lee Trams")
+                .build();
+        //Add all three to databse
+        vehicleService.addBus(busVehicleModel);
+        vehicleService.addTrain(trainVehicleModel);
+        vehicleService.addTram(tramVehicleModel);
+        //Return ok.
+        return ResponseEntity.ok().build();
     }
 
 }
