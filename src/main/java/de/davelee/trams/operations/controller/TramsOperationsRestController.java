@@ -2,6 +2,7 @@ package de.davelee.trams.operations.controller;
 
 import de.davelee.trams.operations.model.*;
 import de.davelee.trams.operations.request.ImportZipRequest;
+import de.davelee.trams.operations.response.VehicleResponse;
 import de.davelee.trams.operations.service.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -148,6 +149,19 @@ public class TramsOperationsRestController {
             }
         }
         return ResponseEntity.unprocessableEntity().build();
+    }
+
+    /**
+     * Endpoint to retrieve vehicle fleet information.
+     * @return a <code>List</code> of <code>VehicleResponse</code> objects which may be null if there are no vehicles in the database.
+     */
+    @GetMapping("/vehicles")
+    @CrossOrigin
+    @ResponseBody
+    @ApiOperation(value = "Get vehicles", notes="Return all vehicles in the fleet")
+    @ApiResponses(value = {@ApiResponse(code=200,message="Successfully returned vehicles")})
+    public List<VehicleResponse> getVehicles ( ) {
+        return vehicleService.retrieveAllVehicles();
     }
 
     /**

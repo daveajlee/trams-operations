@@ -60,5 +60,9 @@ public class VehicleModel {
      */
     private VehicleStatus vehicleStatus;
 
+    /**
+     * The allocated tour for this vehicle.
+     */
+    private String allocatedTour;
 
 }

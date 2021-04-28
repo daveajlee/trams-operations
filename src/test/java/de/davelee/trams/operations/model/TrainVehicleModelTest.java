@@ -44,7 +44,7 @@ public class TrainVehicleModelTest {
         assertEquals("Lee Buses", vehicleModel.getCompany());
         //Verify the toString method
         assertEquals("TrainVehicleModel(powerMode=DIESEL)", vehicleModel.toString());
-        assertEquals("VehicleModel(fleetNumber=213, company=Lee Buses, deliveryDate=2021-03-25, inspectionDate=2021-04-25, seatingCapacity=50, standingCapacity=80, modelName=Train 2000 Di, livery=Green with black slide, vehicleStatus=INSPECTED)", vehicleModel.toDetailedString());
+        assertEquals("VehicleModel(fleetNumber=213, company=Lee Buses, deliveryDate=2021-03-25, inspectionDate=2021-04-25, seatingCapacity=50, standingCapacity=80, modelName=Train 2000 Di, livery=Green with black slide, vehicleStatus=INSPECTED, allocatedTour=)", vehicleModel.toDetailedString());
         //Now use the setter methods
         vehicleModel.setPowerMode(TrainPowerMode.ELECTRIC);
         vehicleModel.setModelName("Train 2000 El");
@@ -58,7 +58,7 @@ public class TrainVehicleModelTest {
         vehicleModel.setCompany("Lee Buses 2");
         //And verify again through the toString methods
         assertEquals("TrainVehicleModel(powerMode=ELECTRIC)", vehicleModel.toString());
-        assertEquals("VehicleModel(fleetNumber=214, company=Lee Buses 2, deliveryDate=2021-03-31, inspectionDate=2021-04-05, seatingCapacity=54, standingCapacity=82, modelName=Train 2000 El, livery=Red with plus logo, vehicleStatus=PURCHASED)", vehicleModel.toDetailedString());
+        assertEquals("VehicleModel(fleetNumber=214, company=Lee Buses 2, deliveryDate=2021-03-31, inspectionDate=2021-04-05, seatingCapacity=54, standingCapacity=82, modelName=Train 2000 El, livery=Red with plus logo, vehicleStatus=PURCHASED, allocatedTour=)", vehicleModel.toDetailedString());
     }
 
 }

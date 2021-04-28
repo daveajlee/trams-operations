@@ -44,7 +44,7 @@ public class TramVehicleModelTest {
         assertEquals("Lee Buses", vehicleModel.getCompany());
         //Verify the toString method
         assertEquals("TramVehicleModel(isBidirectional=true)", vehicleModel.toString());
-        assertEquals("VehicleModel(fleetNumber=213, company=Lee Buses, deliveryDate=2021-03-25, inspectionDate=2021-04-25, seatingCapacity=50, standingCapacity=80, modelName=Tram 2000 Bi, livery=Green with black slide, vehicleStatus=INSPECTED)", vehicleModel.toDetailedString());
+        assertEquals("VehicleModel(fleetNumber=213, company=Lee Buses, deliveryDate=2021-03-25, inspectionDate=2021-04-25, seatingCapacity=50, standingCapacity=80, modelName=Tram 2000 Bi, livery=Green with black slide, vehicleStatus=INSPECTED, allocatedTour=)", vehicleModel.toDetailedString());
         //Now use the setter methods
         vehicleModel.setBidirectional(false);
         vehicleModel.setModelName("Tram 2000");
@@ -58,7 +58,7 @@ public class TramVehicleModelTest {
         vehicleModel.setCompany("Lee Buses 2");
         //And verify again through the toString methods
         assertEquals("TramVehicleModel(isBidirectional=false)", vehicleModel.toString());
-        assertEquals("VehicleModel(fleetNumber=214, company=Lee Buses 2, deliveryDate=2021-03-31, inspectionDate=2021-04-05, seatingCapacity=54, standingCapacity=82, modelName=Tram 2000, livery=Red with plus logo, vehicleStatus=PURCHASED)", vehicleModel.toDetailedString());
+        assertEquals("VehicleModel(fleetNumber=214, company=Lee Buses 2, deliveryDate=2021-03-31, inspectionDate=2021-04-05, seatingCapacity=54, standingCapacity=82, modelName=Tram 2000, livery=Red with plus logo, vehicleStatus=PURCHASED, allocatedTour=)", vehicleModel.toDetailedString());
     }
 
 }

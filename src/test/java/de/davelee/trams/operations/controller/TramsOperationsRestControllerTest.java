@@ -3,7 +3,9 @@ package de.davelee.trams.operations.controller;
 import de.davelee.trams.operations.model.RouteModel;
 import de.davelee.trams.operations.model.StopModel;
 import de.davelee.trams.operations.model.StopTimeModel;
+import de.davelee.trams.operations.model.VehicleType;
 import de.davelee.trams.operations.request.ImportZipRequest;
+import de.davelee.trams.operations.response.VehicleResponse;
 import de.davelee.trams.operations.service.*;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.Test;
@@ -19,6 +21,7 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -49,6 +52,9 @@ public class TramsOperationsRestControllerTest {
 
     @Mock
     private FileSystemStorageService fileSystemStorageService;
+
+    @Mock
+    private VehicleService vehicleService;
 
     /**
      * Test the departure endpoint of this controller.
@@ -170,6 +176,23 @@ public class TramsOperationsRestControllerTest {
         List<StopModel> stopModelList = controller.getStops();
         assertEquals(1, stopModelList.size());
         assertEquals("Greenfield", stopModelList.get(0).getName());
+    }
+
+    /**
+     * Test the vehicles endpoint of this controller.
+     */
+    @Test
+    public void testVehiclesEndpoint() {
+        Mockito.when(vehicleService.retrieveAllVehicles()).thenReturn(Lists.newArrayList(VehicleResponse.builder()
+                .livery("Green with red text")
+                .fleetNumber("213")
+                .allocatedTour("1/1")
+                .vehicleType(VehicleType.BUS)
+                .additionalTypeInformationMap(Collections.singletonMap("Registration Number", "XXX2 BBB"))
+                .build()));
+        List<VehicleResponse> vehicleResponseList = controller.getVehicles();
+        assertEquals(1, vehicleResponseList.size());
+        assertEquals(VehicleType.BUS, vehicleResponseList.get(0).getVehicleType());
     }
 
 }

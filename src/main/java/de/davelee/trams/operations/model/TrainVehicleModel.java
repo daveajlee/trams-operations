@@ -39,7 +39,7 @@ public class TrainVehicleModel extends VehicleModel {
     public TrainVehicleModel (final String fleetNumber, final String company, final LocalDate deliveryDate, final LocalDate inspectionDate,
                              final int seatingCapacity, final int standingCapacity, final String modelName, final String livery,
                              final VehicleStatus vehicleStatus, final TrainPowerMode powerMode ) {
-        super(fleetNumber, company, deliveryDate, inspectionDate, seatingCapacity, standingCapacity, modelName, livery, vehicleStatus);
+        super(fleetNumber, company, deliveryDate, inspectionDate, seatingCapacity, standingCapacity, modelName, livery, vehicleStatus, "");
         this.powerMode = powerMode;
     }
 

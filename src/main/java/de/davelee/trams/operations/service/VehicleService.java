@@ -1,13 +1,16 @@
 package de.davelee.trams.operations.service;
 
-import de.davelee.trams.operations.model.BusVehicleModel;
-import de.davelee.trams.operations.model.TrainVehicleModel;
-import de.davelee.trams.operations.model.TramVehicleModel;
+import de.davelee.trams.operations.model.*;
 import de.davelee.trams.operations.repository.BusVehicleRepository;
 import de.davelee.trams.operations.repository.TrainVehicleRepository;
 import de.davelee.trams.operations.repository.TramVehicleRepository;
+import de.davelee.trams.operations.response.VehicleResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * This class provides a service for managing vehicles in Trams Operations.
@@ -50,6 +53,55 @@ public class VehicleService {
      */
     public boolean addTrain (final TrainVehicleModel trainVehicleModel ) {
         return trainVehicleRepository.insert(trainVehicleModel) != null;
+    }
+
+    /**
+     * Retrieve all of the vehicles currently stored in the database for all types.
+     * @return a <code>List</code> of <code>VehicleResponse</code> objects in a format suitable to be returned via API.
+     */
+    public List<VehicleResponse> retrieveAllVehicles ( ) {
+        //List to store all vehicles
+        List<VehicleResponse> vehicleResponseList = new ArrayList<>();
+        //Process trains
+        List<TrainVehicleModel> trainVehicleModelList = trainVehicleRepository.findAll();
+        for ( TrainVehicleModel trainVehicleModel : trainVehicleModelList ) {
+            VehicleResponse vehicleResponse = convertToStandardVehicleResponse(trainVehicleModel);
+            vehicleResponse.setVehicleType(VehicleType.TRAIN);
+            vehicleResponse.setAdditionalTypeInformationMap(Collections.singletonMap("Power Mode", trainVehicleModel.getPowerMode().toString()));
+            vehicleResponseList.add(vehicleResponse);
+        }
+        //Process buses
+        List<BusVehicleModel> busVehicleModelList = busVehicleRepository.findAll();
+        for ( BusVehicleModel busVehicleModel : busVehicleModelList ) {
+            VehicleResponse vehicleResponse = convertToStandardVehicleResponse(busVehicleModel);
+            vehicleResponse.setVehicleType(VehicleType.BUS);
+            vehicleResponse.setAdditionalTypeInformationMap(Collections.singletonMap("Registration Number", busVehicleModel.getRegistrationNumber()));
+            vehicleResponseList.add(vehicleResponse);
+        }
+        //Process trams
+        List<TramVehicleModel> tramVehicleModelList = tramVehicleRepository.findAll();
+        for ( TramVehicleModel tramVehicleModel : tramVehicleModelList ) {
+            VehicleResponse vehicleResponse = convertToStandardVehicleResponse(tramVehicleModel);
+            vehicleResponse.setVehicleType(VehicleType.TRAM);
+            vehicleResponse.setAdditionalTypeInformationMap(Collections.singletonMap("Bidirectional", Boolean.toString(tramVehicleModel.isBidirectional())));
+            vehicleResponseList.add(vehicleResponse);
+        }
+        //Return the vehicle list
+        return vehicleResponseList;
+    }
+
+    /**
+     * This is a private helper method which converts selected attributes from the database to a suitable format for the
+     * response for the Rest API.
+     * @param vehicleModel a <code>VehicleModel</code> object with the data from the database to be converted.
+     * @return a <code>VehicleResponse</code> object with data suitable to be included in the response.
+     */
+    private VehicleResponse convertToStandardVehicleResponse( final VehicleModel vehicleModel ) {
+        return VehicleResponse.builder()
+                .allocatedTour(vehicleModel.getAllocatedTour())
+                .fleetNumber(vehicleModel.getFleetNumber())
+                .livery(vehicleModel.getLivery())
+                .build();
     }
 
 }

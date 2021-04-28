@@ -39,7 +39,7 @@ public class BusVehicleModel extends VehicleModel {
     public BusVehicleModel (final String fleetNumber, final String company, final LocalDate deliveryDate, final LocalDate inspectionDate,
                             final int seatingCapacity, final int standingCapacity, final String modelName, final String livery,
                             final VehicleStatus vehicleStatus, final String registrationNumber ) {
-        super(fleetNumber, company, deliveryDate, inspectionDate, seatingCapacity, standingCapacity, modelName, livery, vehicleStatus);
+        super(fleetNumber, company, deliveryDate, inspectionDate, seatingCapacity, standingCapacity, modelName, livery, vehicleStatus, "");
         this.registrationNumber = registrationNumber;
     }
 
