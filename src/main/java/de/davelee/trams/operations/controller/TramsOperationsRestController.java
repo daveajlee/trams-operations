@@ -165,6 +165,22 @@ public class TramsOperationsRestController {
     }
 
     /**
+     * Endpoint to retrieve vehicle information that starts with the supplied company name and starts with the supplied
+     * fleet number.
+     * @param company a <code>String</code> containing the name of the company to search for.
+     * @param fleetNumber a <code>String</code> containing the fleet number to search for.
+     * @return a <code>List</code> of <code>VehicleResponse</code> objects which may be null if there are no vehicles found.
+     */
+    @GetMapping("/vehiclesCompanyFleetNumber")
+    @CrossOrigin
+    @ResponseBody
+    @ApiOperation(value = "Get vehicles", notes="Return all vehicles matching company and fleet number")
+    @ApiResponses(value = {@ApiResponse(code=200,message="Successfully returned vehicles")})
+    public List<VehicleResponse> getVehiclesByCompanyAndFleetNumber ( final String company, final String fleetNumber ) {
+        return vehicleService.retrieveVehiclesByCompanyAndFleetNumber(company, fleetNumber);
+    }
+
+    /**
      * Temporary endpoint to add test data which will be removed as soon as data can be added through normal endpoints.
      * @return a <code>ResponseEntity</code> object which returns the http status of this method if it was successful or not.
      */

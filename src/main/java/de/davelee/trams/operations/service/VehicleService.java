@@ -63,31 +63,80 @@ public class VehicleService {
         //List to store all vehicles
         List<VehicleResponse> vehicleResponseList = new ArrayList<>();
         //Process trains
-        List<TrainVehicleModel> trainVehicleModelList = trainVehicleRepository.findAll();
+        processTrainModels(trainVehicleRepository.findAll(), vehicleResponseList);
+        //Process buses
+        processBusModels(busVehicleRepository.findAll(), vehicleResponseList);
+        //Process trams
+        processTramModels(tramVehicleRepository.findAll(), vehicleResponseList);
+        //Return the vehicle list
+        return vehicleResponseList;
+    }
+
+    /**
+     * Retrieve all vehicles starting with the supplied company name and fleet number from the database for all types.
+     * @param company a <code>String</code> with the name of the company to search for.
+     * @param fleetNumber a <code>String</code> with the fleet number to search for.
+     * @return a <code>List</code> of <code>VehicleResponse</code> objects in a format suitable to be returned via API.
+     */
+    public List<VehicleResponse> retrieveVehiclesByCompanyAndFleetNumber ( final String company, final String fleetNumber) {
+        //List to store all vehicles
+        List<VehicleResponse> vehicleResponseList = new ArrayList<>();
+        //Process trains
+        processTrainModels(trainVehicleRepository
+                .findByCompanyStartsWithAndFleetNumberStartsWith(company, fleetNumber), vehicleResponseList);
+        //Process buses
+        processBusModels(busVehicleRepository
+                .findByCompanyStartsWithAndFleetNumberStartsWith(company, fleetNumber), vehicleResponseList);
+        //Process trams
+        processTramModels(tramVehicleRepository
+                .findByCompanyStartsWithAndFleetNumberStartsWith(company, fleetNumber), vehicleResponseList);
+        //Return the vehicle list
+        return vehicleResponseList;
+    }
+
+    /**
+     * This is a private helper method to process the supplied list of <code>TrainVehicleModel</code> objects and convert
+     * them into <code>VehicleResponse</code> objects.
+     * @param trainVehicleModelList a <code>List</code> of <code>TrainVehicleModel</code> objects to convert
+     * @param vehicleResponseList a <code>List</code> of <code>VehicleResponse</code> which may be empty to store converted results.
+     */
+    private void processTrainModels ( final List<TrainVehicleModel> trainVehicleModelList, final List<VehicleResponse> vehicleResponseList) {
         for ( TrainVehicleModel trainVehicleModel : trainVehicleModelList ) {
             VehicleResponse vehicleResponse = convertToStandardVehicleResponse(trainVehicleModel);
             vehicleResponse.setVehicleType(VehicleType.TRAIN);
             vehicleResponse.setAdditionalTypeInformationMap(Collections.singletonMap("Power Mode", trainVehicleModel.getPowerMode().toString()));
             vehicleResponseList.add(vehicleResponse);
         }
-        //Process buses
-        List<BusVehicleModel> busVehicleModelList = busVehicleRepository.findAll();
+    }
+
+    /**
+     * This is a private helper method to process the supplied list of <code>BusVehicleModel</code> objects and convert
+     * them into <code>VehicleResponse</code> objects.
+     * @param busVehicleModelList a <code>List</code> of <code>BusVehicleModel</code> objects to convert
+     * @param vehicleResponseList a <code>List</code> of <code>VehicleResponse</code> which may be empty to store converted results.
+     */
+    private void processBusModels ( final List<BusVehicleModel> busVehicleModelList, final List<VehicleResponse> vehicleResponseList) {
         for ( BusVehicleModel busVehicleModel : busVehicleModelList ) {
             VehicleResponse vehicleResponse = convertToStandardVehicleResponse(busVehicleModel);
             vehicleResponse.setVehicleType(VehicleType.BUS);
             vehicleResponse.setAdditionalTypeInformationMap(Collections.singletonMap("Registration Number", busVehicleModel.getRegistrationNumber()));
             vehicleResponseList.add(vehicleResponse);
         }
-        //Process trams
-        List<TramVehicleModel> tramVehicleModelList = tramVehicleRepository.findAll();
+    }
+
+    /**
+     * This is a private helper method to process the supplied list of <code>TramVehicleModel</code> objects and convert
+     * them into <code>VehicleResponse</code> objects.
+     * @param tramVehicleModelList a <code>List</code> of <code>TramVehicleModel</code> objects to convert
+     * @param vehicleResponseList a <code>List</code> of <code>VehicleResponse</code> which may be empty to store converted results.
+     */
+    private void processTramModels ( final List<TramVehicleModel> tramVehicleModelList, final List<VehicleResponse> vehicleResponseList ) {
         for ( TramVehicleModel tramVehicleModel : tramVehicleModelList ) {
             VehicleResponse vehicleResponse = convertToStandardVehicleResponse(tramVehicleModel);
             vehicleResponse.setVehicleType(VehicleType.TRAM);
             vehicleResponse.setAdditionalTypeInformationMap(Collections.singletonMap("Bidirectional", Boolean.toString(tramVehicleModel.isBidirectional())));
             vehicleResponseList.add(vehicleResponse);
         }
-        //Return the vehicle list
-        return vehicleResponseList;
     }
 
     /**
