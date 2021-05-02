@@ -27,7 +27,7 @@ public class TramVehicleModelTest {
                 .livery("Green with black slide")
                 .seatingCapacity(50)
                 .standingCapacity(80)
-                .vehicleStatus(VehicleStatus.INSPECTED)
+                .vehicleStatus(VehicleStatus.DELIVERED)
                 .fleetNumber("213")
                 .company("Lee Buses")
                 .build();
@@ -39,12 +39,12 @@ public class TramVehicleModelTest {
         assertEquals("Green with black slide", vehicleModel.getLivery());
         assertEquals(50, vehicleModel.getSeatingCapacity());
         assertEquals(80, vehicleModel.getStandingCapacity());
-        assertEquals(VehicleStatus.INSPECTED, vehicleModel.getVehicleStatus());
+        assertEquals(VehicleStatus.DELIVERED, vehicleModel.getVehicleStatus());
         assertEquals("213", vehicleModel.getFleetNumber());
         assertEquals("Lee Buses", vehicleModel.getCompany());
         //Verify the toString method
         assertEquals("TramVehicleModel(isBidirectional=true)", vehicleModel.toString());
-        assertEquals("VehicleModel(fleetNumber=213, company=Lee Buses, deliveryDate=2021-03-25, inspectionDate=2021-04-25, seatingCapacity=50, standingCapacity=80, modelName=Tram 2000 Bi, livery=Green with black slide, vehicleStatus=INSPECTED, allocatedTour=)", vehicleModel.toDetailedString());
+        assertEquals("VehicleModel(fleetNumber=213, company=Lee Buses, deliveryDate=2021-03-25, inspectionDate=2021-04-25, seatingCapacity=50, standingCapacity=80, modelName=Tram 2000 Bi, livery=Green with black slide, vehicleStatus=DELIVERED, allocatedTour=)", vehicleModel.toDetailedString());
         //Now use the setter methods
         vehicleModel.setBidirectional(false);
         vehicleModel.setModelName("Tram 2000");

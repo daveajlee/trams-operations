@@ -197,7 +197,7 @@ public class TramsOperationsRestController {
                 .livery("Green with black slide")
                 .seatingCapacity(50)
                 .standingCapacity(80)
-                .vehicleStatus(VehicleStatus.INSPECTED)
+                .vehicleStatus(VehicleStatus.DELIVERED)
                 .fleetNumber("213")
                 .company("Lee Buses")
                 .build();
@@ -210,7 +210,7 @@ public class TramsOperationsRestController {
                 .livery("Green with black slide")
                 .seatingCapacity(50)
                 .standingCapacity(80)
-                .vehicleStatus(VehicleStatus.INSPECTED)
+                .vehicleStatus(VehicleStatus.DELIVERED)
                 .fleetNumber("2130")
                 .company("Lee Trains")
                 .build();
@@ -223,7 +223,7 @@ public class TramsOperationsRestController {
                 .livery("Green with black slide")
                 .seatingCapacity(50)
                 .standingCapacity(80)
-                .vehicleStatus(VehicleStatus.INSPECTED)
+                .vehicleStatus(VehicleStatus.DELIVERED)
                 .fleetNumber("2310")
                 .company("Lee Trams")
                 .build();

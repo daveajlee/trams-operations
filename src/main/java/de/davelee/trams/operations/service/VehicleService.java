@@ -6,8 +6,11 @@ import de.davelee.trams.operations.repository.TrainVehicleRepository;
 import de.davelee.trams.operations.repository.TramVehicleRepository;
 import de.davelee.trams.operations.response.VehicleResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -27,6 +30,16 @@ public class VehicleService {
 
     @Autowired
     private TramVehicleRepository tramVehicleRepository;
+
+    @Value("${bus.inspection.period}")
+    private int busInspectionPeriodInYears;
+
+    @Value("${train.inspection.period}")
+    private int trainInspectionPeriodInYears;
+
+    @Value("${tram.inspection.period}")
+    private int tramInspectionPeriodInYears;
+
 
     /**
      * Add the supplied bus to the database.
@@ -105,6 +118,7 @@ public class VehicleService {
             VehicleResponse vehicleResponse = convertToStandardVehicleResponse(trainVehicleModel);
             vehicleResponse.setVehicleType(VehicleType.TRAIN);
             vehicleResponse.setAdditionalTypeInformationMap(Collections.singletonMap("Power Mode", trainVehicleModel.getPowerMode().toString()));
+            processInspectionDate(vehicleResponse, trainVehicleModel.getInspectionDate(), trainInspectionPeriodInYears );
             vehicleResponseList.add(vehicleResponse);
         }
     }
@@ -120,7 +134,28 @@ public class VehicleService {
             VehicleResponse vehicleResponse = convertToStandardVehicleResponse(busVehicleModel);
             vehicleResponse.setVehicleType(VehicleType.BUS);
             vehicleResponse.setAdditionalTypeInformationMap(Collections.singletonMap("Registration Number", busVehicleModel.getRegistrationNumber()));
+            processInspectionDate(vehicleResponse, busVehicleModel.getInspectionDate(), busInspectionPeriodInYears );
             vehicleResponseList.add(vehicleResponse);
+        }
+    }
+
+    /**
+     * This is a private helper method to calculate the inspection status of a vehicle and how many days until the next
+     * inspection is due based on the last inspection date.
+     * @param vehicleResponse a <code>VehicleResponse</code> object to write the results of the calculations in.
+     * @param inspectionDate a <code>LocalDate</code> containing the date of the last inspection range
+     * @param inspectionPeriod a <code>int</code> containing the number of years within which an inspection must take place
+     */
+    private void processInspectionDate ( final VehicleResponse vehicleResponse, final LocalDate inspectionDate,
+                                         final int inspectionPeriod ) {
+        final LocalDate inspectionStartRange = LocalDate.now().minusYears(inspectionPeriod);
+        if ( inspectionDate.isAfter(LocalDate.now().minusYears(inspectionPeriod)) ) {
+            vehicleResponse.setInspectionStatus(InspectionStatus.INSPECTED);
+            vehicleResponse.setNextInspectionDueInDays(ChronoUnit.DAYS.between(LocalDate.now(),
+                    inspectionDate.plusYears(inspectionPeriod)));
+        } else {
+            vehicleResponse.setInspectionStatus(InspectionStatus.INSPECTION_DUE);
+            vehicleResponse.setNextInspectionDueInDays(0);
         }
     }
 
@@ -135,6 +170,7 @@ public class VehicleService {
             VehicleResponse vehicleResponse = convertToStandardVehicleResponse(tramVehicleModel);
             vehicleResponse.setVehicleType(VehicleType.TRAM);
             vehicleResponse.setAdditionalTypeInformationMap(Collections.singletonMap("Bidirectional", Boolean.toString(tramVehicleModel.isBidirectional())));
+            processInspectionDate(vehicleResponse, tramVehicleModel.getInspectionDate(), tramInspectionPeriodInYears );
             vehicleResponseList.add(vehicleResponse);
         }
     }

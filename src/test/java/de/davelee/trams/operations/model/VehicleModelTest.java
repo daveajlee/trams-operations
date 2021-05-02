@@ -2,10 +2,7 @@ package de.davelee.trams.operations.model;
 
 import org.junit.jupiter.api.Test;
 
-import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.Collections;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -23,7 +20,7 @@ public class VehicleModelTest {
         //Test builder
         VehicleModel vehicleModel = new VehicleModel("213", "Lee Buses",
                 LocalDate.of(2021,3,25), LocalDate.of(2021,4,25), 50, 80,
-                "BendyBus 2000", "Green with black slide", VehicleStatus.INSPECTED, "1/1");
+                "BendyBus 2000", "Green with black slide", VehicleStatus.DELIVERED, "1/1");
         //Verify the builder functionality through getter methods
         assertEquals("BendyBus 2000", vehicleModel.getModelName());
         assertEquals(LocalDate.of(2021,3,25), vehicleModel.getDeliveryDate());
@@ -31,12 +28,12 @@ public class VehicleModelTest {
         assertEquals("Green with black slide", vehicleModel.getLivery());
         assertEquals(50, vehicleModel.getSeatingCapacity());
         assertEquals(80, vehicleModel.getStandingCapacity());
-        assertEquals(VehicleStatus.INSPECTED, vehicleModel.getVehicleStatus());
+        assertEquals(VehicleStatus.DELIVERED, vehicleModel.getVehicleStatus());
         assertEquals("213", vehicleModel.getFleetNumber());
         assertEquals("Lee Buses", vehicleModel.getCompany());
         assertEquals("1/1", vehicleModel.getAllocatedTour());
         //Verify the toString method
-        assertEquals("VehicleModel(fleetNumber=213, company=Lee Buses, deliveryDate=2021-03-25, inspectionDate=2021-04-25, seatingCapacity=50, standingCapacity=80, modelName=BendyBus 2000, livery=Green with black slide, vehicleStatus=INSPECTED, allocatedTour=1/1)", vehicleModel.toString());
+        assertEquals("VehicleModel(fleetNumber=213, company=Lee Buses, deliveryDate=2021-03-25, inspectionDate=2021-04-25, seatingCapacity=50, standingCapacity=80, modelName=BendyBus 2000, livery=Green with black slide, vehicleStatus=DELIVERED, allocatedTour=1/1)", vehicleModel.toString());
         //Now use the setter methods
         vehicleModel.setModelName("BendyBus 2000 Plus");
         vehicleModel.setDeliveryDate(LocalDate.of(2021,3,31));

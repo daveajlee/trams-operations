@@ -17,11 +17,6 @@ public enum VehicleStatus {
     DELIVERED,
 
     /**
-     * Vehicle has been inspected.
-     */
-    INSPECTED,
-
-    /**
      * Vehicle has been sold.
      */
     SOLD

@@ -26,7 +26,7 @@ public class BusVehicleModelTest {
                 .livery("Green with black slide")
                 .seatingCapacity(50)
                 .standingCapacity(80)
-                .vehicleStatus(VehicleStatus.INSPECTED)
+                .vehicleStatus(VehicleStatus.DELIVERED)
                 .fleetNumber("213")
                 .company("Lee Buses")
                 .build();
@@ -38,12 +38,12 @@ public class BusVehicleModelTest {
         assertEquals("Green with black slide", vehicleModel.getLivery());
         assertEquals(50, vehicleModel.getSeatingCapacity());
         assertEquals(80, vehicleModel.getStandingCapacity());
-        assertEquals(VehicleStatus.INSPECTED, vehicleModel.getVehicleStatus());
+        assertEquals(VehicleStatus.DELIVERED, vehicleModel.getVehicleStatus());
         assertEquals("213", vehicleModel.getFleetNumber());
         assertEquals("Lee Buses", vehicleModel.getCompany());
         //Verify the toString method
         assertEquals("BusVehicleModel(registrationNumber=W234DHDF)", vehicleModel.toString());
-        assertEquals("VehicleModel(fleetNumber=213, company=Lee Buses, deliveryDate=2021-03-25, inspectionDate=2021-04-25, seatingCapacity=50, standingCapacity=80, modelName=BendyBus 2000, livery=Green with black slide, vehicleStatus=INSPECTED, allocatedTour=)", vehicleModel.toDetailedString());
+        assertEquals("VehicleModel(fleetNumber=213, company=Lee Buses, deliveryDate=2021-03-25, inspectionDate=2021-04-25, seatingCapacity=50, standingCapacity=80, modelName=BendyBus 2000, livery=Green with black slide, vehicleStatus=DELIVERED, allocatedTour=)", vehicleModel.toDetailedString());
         //Now use the setter methods
         vehicleModel.setRegistrationNumber("W234DHDG");
         vehicleModel.setModelName("BendyBus 2000 Plus");
