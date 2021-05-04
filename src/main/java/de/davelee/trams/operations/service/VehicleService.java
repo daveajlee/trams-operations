@@ -116,7 +116,7 @@ public class VehicleService {
     private void processTrainModels ( final List<TrainVehicleModel> trainVehicleModelList, final List<VehicleResponse> vehicleResponseList) {
         for ( TrainVehicleModel trainVehicleModel : trainVehicleModelList ) {
             VehicleResponse vehicleResponse = convertToStandardVehicleResponse(trainVehicleModel);
-            vehicleResponse.setVehicleType(VehicleType.TRAIN);
+            vehicleResponse.setVehicleType(VehicleType.TRAIN.getTypeName());
             vehicleResponse.setAdditionalTypeInformationMap(Collections.singletonMap("Power Mode", trainVehicleModel.getPowerMode().toString()));
             processInspectionDate(vehicleResponse, trainVehicleModel.getInspectionDate(), trainInspectionPeriodInYears );
             vehicleResponseList.add(vehicleResponse);
@@ -132,7 +132,7 @@ public class VehicleService {
     private void processBusModels ( final List<BusVehicleModel> busVehicleModelList, final List<VehicleResponse> vehicleResponseList) {
         for ( BusVehicleModel busVehicleModel : busVehicleModelList ) {
             VehicleResponse vehicleResponse = convertToStandardVehicleResponse(busVehicleModel);
-            vehicleResponse.setVehicleType(VehicleType.BUS);
+            vehicleResponse.setVehicleType(VehicleType.BUS.getTypeName());
             vehicleResponse.setAdditionalTypeInformationMap(Collections.singletonMap("Registration Number", busVehicleModel.getRegistrationNumber()));
             processInspectionDate(vehicleResponse, busVehicleModel.getInspectionDate(), busInspectionPeriodInYears );
             vehicleResponseList.add(vehicleResponse);
@@ -150,11 +150,11 @@ public class VehicleService {
                                          final int inspectionPeriod ) {
         final LocalDate inspectionStartRange = LocalDate.now().minusYears(inspectionPeriod);
         if ( inspectionDate.isAfter(LocalDate.now().minusYears(inspectionPeriod)) ) {
-            vehicleResponse.setInspectionStatus(InspectionStatus.INSPECTED);
+            vehicleResponse.setInspectionStatus(InspectionStatus.INSPECTED.getInspectionNotice());
             vehicleResponse.setNextInspectionDueInDays(ChronoUnit.DAYS.between(LocalDate.now(),
                     inspectionDate.plusYears(inspectionPeriod)));
         } else {
-            vehicleResponse.setInspectionStatus(InspectionStatus.INSPECTION_DUE);
+            vehicleResponse.setInspectionStatus(InspectionStatus.INSPECTION_DUE.getInspectionNotice());
             vehicleResponse.setNextInspectionDueInDays(0);
         }
     }
@@ -168,7 +168,7 @@ public class VehicleService {
     private void processTramModels ( final List<TramVehicleModel> tramVehicleModelList, final List<VehicleResponse> vehicleResponseList ) {
         for ( TramVehicleModel tramVehicleModel : tramVehicleModelList ) {
             VehicleResponse vehicleResponse = convertToStandardVehicleResponse(tramVehicleModel);
-            vehicleResponse.setVehicleType(VehicleType.TRAM);
+            vehicleResponse.setVehicleType(VehicleType.TRAM.getTypeName());
             vehicleResponse.setAdditionalTypeInformationMap(Collections.singletonMap("Bidirectional", Boolean.toString(tramVehicleModel.isBidirectional())));
             processInspectionDate(vehicleResponse, tramVehicleModel.getInspectionDate(), tramInspectionPeriodInYears );
             vehicleResponseList.add(vehicleResponse);

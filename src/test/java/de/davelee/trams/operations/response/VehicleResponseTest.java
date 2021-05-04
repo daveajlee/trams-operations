@@ -23,26 +23,26 @@ public class VehicleResponseTest {
                 .livery("Green with red text")
                 .fleetNumber("213")
                 .allocatedTour("1/1")
-                .vehicleType(VehicleType.BUS)
+                .vehicleType("Bus")
                 .additionalTypeInformationMap(Collections.singletonMap("Registration Number", "XXX2 BBB"))
-                .inspectionStatus(InspectionStatus.INSPECTED)
+                .inspectionStatus("Inspected")
                 .nextInspectionDueInDays(100)
                 .build();
         assertEquals("Green with red text", vehicleResponse.getLivery());
         assertEquals("213", vehicleResponse.getFleetNumber());
         assertEquals("1/1", vehicleResponse.getAllocatedTour());
-        assertEquals(VehicleType.BUS, vehicleResponse.getVehicleType());
+        assertEquals("Bus", vehicleResponse.getVehicleType());
         assertEquals("XXX2 BBB", vehicleResponse.getAdditionalTypeInformationMap().get("Registration Number"));
-        assertEquals(InspectionStatus.INSPECTED, vehicleResponse.getInspectionStatus());
+        assertEquals("Inspected", vehicleResponse.getInspectionStatus());
         assertEquals(100, vehicleResponse.getNextInspectionDueInDays());
         vehicleResponse.setLivery("Blue with orange text");
         vehicleResponse.setFleetNumber("1213");
         vehicleResponse.setAllocatedTour("1/2");
-        vehicleResponse.setVehicleType(VehicleType.TRAM);
+        vehicleResponse.setVehicleType("Tram");
         vehicleResponse.setAdditionalTypeInformationMap(Collections.singletonMap("Bidirectional", "true"));
-        vehicleResponse.setInspectionStatus(InspectionStatus.INSPECTION_DUE);
+        vehicleResponse.setInspectionStatus("Inspection Due!");
         vehicleResponse.setNextInspectionDueInDays(0);
-        assertEquals("VehicleResponse(fleetNumber=1213, vehicleType=TRAM, livery=Blue with orange text, allocatedTour=1/2, inspectionStatus=INSPECTION_DUE, nextInspectionDueInDays=0, additionalTypeInformationMap={Bidirectional=true})", vehicleResponse.toString());
+        assertEquals("VehicleResponse(fleetNumber=1213, vehicleType=Tram, livery=Blue with orange text, allocatedTour=1/2, inspectionStatus=Inspection Due!, nextInspectionDueInDays=0, additionalTypeInformationMap={Bidirectional=true})", vehicleResponse.toString());
     }
 
 }

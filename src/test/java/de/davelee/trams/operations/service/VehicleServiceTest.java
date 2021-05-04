@@ -129,7 +129,7 @@ public class VehicleServiceTest {
                 .registrationNumber("W234DHDF")
                 .modelName("BendyBus 2000")
                 .deliveryDate(LocalDate.of(2021,3,25))
-                .inspectionDate(LocalDate.of(2021,4,25))
+                .inspectionDate(LocalDate.now().minusDays(7))
                 .livery("Green with black slide")
                 .seatingCapacity(50)
                 .standingCapacity(80)
@@ -142,7 +142,7 @@ public class VehicleServiceTest {
                 .powerMode(TrainPowerMode.DIESEL)
                 .modelName("Train 2000 Di")
                 .deliveryDate(LocalDate.of(2021,3,25))
-                .inspectionDate(LocalDate.of(2021,4,25))
+                .inspectionDate(LocalDate.now().minusDays(7))
                 .livery("Green with black slide")
                 .seatingCapacity(50)
                 .standingCapacity(80)
@@ -155,7 +155,7 @@ public class VehicleServiceTest {
                 .isBidirectional(true)
                 .modelName("Tram 2000 Bi")
                 .deliveryDate(LocalDate.of(2021,3,25))
-                .inspectionDate(LocalDate.of(2012,4,25))
+                .inspectionDate(LocalDate.now().minusYears(10))
                 .livery("Green with black slide")
                 .seatingCapacity(50)
                 .standingCapacity(80)
@@ -166,15 +166,15 @@ public class VehicleServiceTest {
         Mockito.when(tramVehicleRepository.findAll()).thenReturn(List.of(tramVehicleModel));
         //Now do actual test.
         List<VehicleResponse> vehicleResponseList = vehicleService.retrieveAllVehicles();
-        assertEquals(VehicleType.TRAIN, vehicleResponseList.get(0).getVehicleType());
-        assertEquals(VehicleType.BUS, vehicleResponseList.get(1).getVehicleType());
-        assertEquals(VehicleType.TRAM, vehicleResponseList.get(2).getVehicleType());
+        assertEquals("Train", vehicleResponseList.get(0).getVehicleType());
+        assertEquals("Bus", vehicleResponseList.get(1).getVehicleType());
+        assertEquals("Tram", vehicleResponseList.get(2).getVehicleType());
         //Check that days until next inspection is calculated correctly.
-        assertEquals(InspectionStatus.INSPECTED, vehicleResponseList.get(0).getInspectionStatus());
+        assertEquals("Inspected", vehicleResponseList.get(0).getInspectionStatus());
         assertEquals(2915, vehicleResponseList.get(0).getNextInspectionDueInDays());
-        assertEquals(InspectionStatus.INSPECTED, vehicleResponseList.get(1).getInspectionStatus());
+        assertEquals("Inspected", vehicleResponseList.get(1).getInspectionStatus());
         assertEquals(1089, vehicleResponseList.get(1).getNextInspectionDueInDays());
-        assertEquals(InspectionStatus.INSPECTION_DUE, vehicleResponseList.get(2).getInspectionStatus());
+        assertEquals("Inspection Due!", vehicleResponseList.get(2).getInspectionStatus());
         assertEquals(0, vehicleResponseList.get(2).getNextInspectionDueInDays());
     }
 
@@ -189,7 +189,7 @@ public class VehicleServiceTest {
                 .registrationNumber("W234DHDF")
                 .modelName("BendyBus 2000")
                 .deliveryDate(LocalDate.of(2021,3,25))
-                .inspectionDate(LocalDate.of(2021,4,25))
+                .inspectionDate(LocalDate.now().minusDays(7))
                 .livery("Green with black slide")
                 .seatingCapacity(50)
                 .standingCapacity(80)
@@ -202,7 +202,7 @@ public class VehicleServiceTest {
                 .powerMode(TrainPowerMode.DIESEL)
                 .modelName("Train 2000 Di")
                 .deliveryDate(LocalDate.of(2021,3,25))
-                .inspectionDate(LocalDate.of(2021,4,25))
+                .inspectionDate(LocalDate.now().minusDays(7))
                 .livery("Green with black slide")
                 .seatingCapacity(50)
                 .standingCapacity(80)
@@ -215,7 +215,7 @@ public class VehicleServiceTest {
                 .isBidirectional(true)
                 .modelName("Tram 2000 Bi")
                 .deliveryDate(LocalDate.of(2021,3,25))
-                .inspectionDate(LocalDate.of(2021,4,25))
+                .inspectionDate(LocalDate.now().minusDays(7))
                 .livery("Green with black slide")
                 .seatingCapacity(50)
                 .standingCapacity(80)
@@ -226,9 +226,9 @@ public class VehicleServiceTest {
         Mockito.when(tramVehicleRepository.findByCompanyStartsWithAndFleetNumberStartsWith("Lee", "21")).thenReturn(List.of(tramVehicleModel));
         //Now do actual test.
         List<VehicleResponse> vehicleResponseList = vehicleService.retrieveVehiclesByCompanyAndFleetNumber("Lee", "21");
-        assertEquals(VehicleType.TRAIN, vehicleResponseList.get(0).getVehicleType());
-        assertEquals(VehicleType.BUS, vehicleResponseList.get(1).getVehicleType());
-        assertEquals(VehicleType.TRAM, vehicleResponseList.get(2).getVehicleType());
+        assertEquals("Train", vehicleResponseList.get(0).getVehicleType());
+        assertEquals("Bus", vehicleResponseList.get(1).getVehicleType());
+        assertEquals("Tram", vehicleResponseList.get(2).getVehicleType());
     }
 
 }
