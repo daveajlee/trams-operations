@@ -43,7 +43,7 @@ public class TrainVehicleModelTest {
         assertEquals("213", vehicleModel.getFleetNumber());
         assertEquals("Lee Buses", vehicleModel.getCompany());
         //Verify the toString method
-        assertEquals("TrainVehicleModel(powerMode=DIESEL)", vehicleModel.toString());
+        assertEquals("TrainVehicleModel(powerMode=Diesel)", vehicleModel.toString());
         assertEquals("VehicleModel(fleetNumber=213, company=Lee Buses, deliveryDate=2021-03-25, inspectionDate=2021-04-25, seatingCapacity=50, standingCapacity=80, modelName=Train 2000 Di, livery=Green with black slide, vehicleStatus=DELIVERED, allocatedTour=)", vehicleModel.toDetailedString());
         //Now use the setter methods
         vehicleModel.setPowerMode(TrainPowerMode.ELECTRIC);
@@ -57,7 +57,7 @@ public class TrainVehicleModelTest {
         vehicleModel.setFleetNumber("214");
         vehicleModel.setCompany("Lee Buses 2");
         //And verify again through the toString methods
-        assertEquals("TrainVehicleModel(powerMode=ELECTRIC)", vehicleModel.toString());
+        assertEquals("TrainVehicleModel(powerMode=Electric)", vehicleModel.toString());
         assertEquals("VehicleModel(fleetNumber=214, company=Lee Buses 2, deliveryDate=2021-03-31, inspectionDate=2021-04-05, seatingCapacity=54, standingCapacity=82, modelName=Train 2000 El, livery=Red with plus logo, vehicleStatus=PURCHASED, allocatedTour=)", vehicleModel.toDetailedString());
     }
 

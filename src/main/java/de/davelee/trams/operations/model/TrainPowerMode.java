@@ -9,25 +9,50 @@ public enum TrainPowerMode {
     /**
      * The train is powered by Diesel fuel.
      */
-    DIESEL,
+    DIESEL {
+        @Override
+        public String toString() {
+            return "Diesel";
+        }
+    },
 
     /**
      * The train is powered by electric overhead current.
      */
-    ELECTRIC,
+    ELECTRIC {
+        @Override
+        public String toString() {
+            return "Electric";
+        }
+    },
 
     /**
      * The train is powered by steam.
      */
-    STEAM,
+    STEAM {
+        @Override
+        public String toString() {
+            return "Steam";
+        }
+    },
 
     /**
      * The train is powered by hydrogen.
      */
-    HYDROGEN,
+    HYDROGEN {
+        @Override
+        public String toString() {
+            return "Hydrogen";
+        }
+    },
 
     /**
      * The train is powered by battery.
      */
-    BATTERY
+    BATTERY {
+        @Override
+        public String toString() {
+            return "Battery";
+        }
+    }
 }
