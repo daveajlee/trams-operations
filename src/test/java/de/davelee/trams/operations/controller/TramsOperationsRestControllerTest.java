@@ -23,6 +23,7 @@ import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -207,7 +208,7 @@ public class TramsOperationsRestControllerTest {
                 .vehicleType("Bus")
                 .additionalTypeInformationMap(Collections.singletonMap("Registration Number", "XXX2 BBB"))
                 .build()));
-        List<VehicleResponse> vehicleResponseList = controller.getVehiclesByCompanyAndFleetNumber("Lee", "21");
+        List<VehicleResponse> vehicleResponseList = controller.getVehiclesByCompanyAndFleetNumber(Optional.of("Lee"), "21");
         assertEquals(1, vehicleResponseList.size());
         assertEquals("Bus", vehicleResponseList.get(0).getVehicleType());
     }

@@ -13,4 +13,5 @@ public interface BusVehicleRepository extends MongoRepository<BusVehicleModel, S
 
     List<BusVehicleModel> findByCompanyStartsWithAndFleetNumberStartsWith (final String company, final String fleetNumber);
 
+    List<BusVehicleModel> findByFleetNumberStartsWith (final String fleetNumber);
 }

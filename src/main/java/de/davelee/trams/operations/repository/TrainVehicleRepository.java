@@ -13,4 +13,5 @@ public interface TrainVehicleRepository extends MongoRepository<TrainVehicleMode
 
     List<TrainVehicleModel> findByCompanyStartsWithAndFleetNumberStartsWith ( final String company, final String fleetNumber);
 
+    List<TrainVehicleModel> findByFleetNumberStartsWith (final String fleetNumber);
 }

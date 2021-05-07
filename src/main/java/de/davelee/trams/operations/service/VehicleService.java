@@ -108,6 +108,27 @@ public class VehicleService {
     }
 
     /**
+     * Retrieve all vehicles starting with the supplied fleet number from the database for all types.
+     * @param fleetNumber a <code>String</code> with the fleet number to search for.
+     * @return a <code>List</code> of <code>VehicleResponse</code> objects in a format suitable to be returned via API.
+     */
+    public List<VehicleResponse> retrieveVehiclesByFleetNumber ( final String fleetNumber) {
+        //List to store all vehicles
+        List<VehicleResponse> vehicleResponseList = new ArrayList<>();
+        //Process trains
+        processTrainModels(trainVehicleRepository
+                .findByFleetNumberStartsWith(fleetNumber), vehicleResponseList);
+        //Process buses
+        processBusModels(busVehicleRepository
+                .findByFleetNumberStartsWith(fleetNumber), vehicleResponseList);
+        //Process trams
+        processTramModels(tramVehicleRepository
+                .findByFleetNumberStartsWith(fleetNumber), vehicleResponseList);
+        //Return the vehicle list
+        return vehicleResponseList;
+    }
+
+    /**
      * This is a private helper method to process the supplied list of <code>TrainVehicleModel</code> objects and convert
      * them into <code>VehicleResponse</code> objects.
      * @param trainVehicleModelList a <code>List</code> of <code>TrainVehicleModel</code> objects to convert

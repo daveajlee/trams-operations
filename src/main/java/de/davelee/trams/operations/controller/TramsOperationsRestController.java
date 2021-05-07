@@ -16,6 +16,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * This class provides REST endpoints which can be called by other clients wishing to communicate with the Trams Operations Module.
@@ -176,8 +177,12 @@ public class TramsOperationsRestController {
     @ResponseBody
     @ApiOperation(value = "Get vehicles", notes="Return all vehicles matching company and fleet number")
     @ApiResponses(value = {@ApiResponse(code=200,message="Successfully returned vehicles")})
-    public List<VehicleResponse> getVehiclesByCompanyAndFleetNumber ( final String company, final String fleetNumber ) {
-        return vehicleService.retrieveVehiclesByCompanyAndFleetNumber(company, fleetNumber);
+    public List<VehicleResponse> getVehiclesByCompanyAndFleetNumber (final Optional<String> company, final String fleetNumber ) {
+        if ( company.isPresent() ) {
+            return vehicleService.retrieveVehiclesByCompanyAndFleetNumber(company.get(), fleetNumber);
+        } else {
+            return vehicleService.retrieveVehiclesByFleetNumber(fleetNumber);
+        }
     }
 
     /**
