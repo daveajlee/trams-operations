@@ -1,10 +1,14 @@
 package de.davelee.trams.operations;
 
+import com.netflix.discovery.EurekaClient;
 import de.davelee.trams.operations.service.FileSystemStorageService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Lazy;
 
 /**
  * This class starts the Trams Operations application using Spring Boot.
@@ -12,6 +16,13 @@ import org.springframework.context.annotation.Bean;
  */
 @SpringBootApplication
 public class TramsOperationsApplication {
+
+	@Autowired
+	@Lazy
+	private EurekaClient eurekaClient;
+
+	@Value("${spring.application.name}")
+	private String appName;
 
 	/**
 	 * Main method to start the application.
