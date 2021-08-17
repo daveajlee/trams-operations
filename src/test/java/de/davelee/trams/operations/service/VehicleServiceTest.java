@@ -9,7 +9,10 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -22,7 +25,17 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * @author Dave Lee
  */
 @SpringBootTest
+@TestPropertySource(properties = { "spring.config.location=classpath:application.properties" })
 public class VehicleServiceTest {
+
+    @Value("${bus.inspection.period}")
+    private int busInspectionPeriod;
+
+    @Value("${train.inspection.period}")
+    private int trainInspectionPeriod;
+
+    @Value("${tram.inspection.period}")
+    private int tramInspectionPeriod;
 
     @InjectMocks
     private VehicleService vehicleService;
@@ -50,7 +63,7 @@ public class VehicleServiceTest {
                 .livery("Green with black slide")
                 .seatingCapacity(50)
                 .standingCapacity(80)
-                .vehicleStatus(VehicleStatus.INSPECTED)
+                .vehicleStatus(VehicleStatus.DELIVERED)
                 .fleetNumber("213")
                 .company("Lee Buses")
                 .build();
@@ -72,7 +85,7 @@ public class VehicleServiceTest {
                 .livery("Green with black slide")
                 .seatingCapacity(50)
                 .standingCapacity(80)
-                .vehicleStatus(VehicleStatus.INSPECTED)
+                .vehicleStatus(VehicleStatus.DELIVERED)
                 .fleetNumber("213")
                 .company("Lee Buses")
                 .build();
@@ -94,7 +107,7 @@ public class VehicleServiceTest {
                 .livery("Green with black slide")
                 .seatingCapacity(50)
                 .standingCapacity(80)
-                .vehicleStatus(VehicleStatus.INSPECTED)
+                .vehicleStatus(VehicleStatus.DELIVERED)
                 .fleetNumber("213")
                 .company("Lee Buses")
                 .build();
@@ -107,16 +120,20 @@ public class VehicleServiceTest {
      */
     @Test
     public void testRetrieveAllVehicles() {
+        //Fix mock object to use values from application.properties
+        ReflectionTestUtils.setField(vehicleService, "busInspectionPeriodInYears", busInspectionPeriod);
+        ReflectionTestUtils.setField(vehicleService, "trainInspectionPeriodInYears", trainInspectionPeriod);
+        ReflectionTestUtils.setField(vehicleService, "tramInspectionPeriodInYears", tramInspectionPeriod);
         //Test data.
         BusVehicleModel busVehicleModel = BusVehicleModel.builder()
                 .registrationNumber("W234DHDF")
                 .modelName("BendyBus 2000")
                 .deliveryDate(LocalDate.of(2021,3,25))
-                .inspectionDate(LocalDate.of(2021,4,25))
+                .inspectionDate(LocalDate.now().minusDays(7))
                 .livery("Green with black slide")
                 .seatingCapacity(50)
                 .standingCapacity(80)
-                .vehicleStatus(VehicleStatus.INSPECTED)
+                .vehicleStatus(VehicleStatus.DELIVERED)
                 .fleetNumber("213")
                 .company("Lee Buses")
                 .build();
@@ -125,11 +142,11 @@ public class VehicleServiceTest {
                 .powerMode(TrainPowerMode.DIESEL)
                 .modelName("Train 2000 Di")
                 .deliveryDate(LocalDate.of(2021,3,25))
-                .inspectionDate(LocalDate.of(2021,4,25))
+                .inspectionDate(LocalDate.now().minusDays(7))
                 .livery("Green with black slide")
                 .seatingCapacity(50)
                 .standingCapacity(80)
-                .vehicleStatus(VehicleStatus.INSPECTED)
+                .vehicleStatus(VehicleStatus.DELIVERED)
                 .fleetNumber("213")
                 .company("Lee Buses")
                 .build();
@@ -138,20 +155,80 @@ public class VehicleServiceTest {
                 .isBidirectional(true)
                 .modelName("Tram 2000 Bi")
                 .deliveryDate(LocalDate.of(2021,3,25))
-                .inspectionDate(LocalDate.of(2021,4,25))
+                .inspectionDate(LocalDate.now().minusYears(10))
                 .livery("Green with black slide")
                 .seatingCapacity(50)
                 .standingCapacity(80)
-                .vehicleStatus(VehicleStatus.INSPECTED)
+                .vehicleStatus(VehicleStatus.DELIVERED)
                 .fleetNumber("213")
                 .company("Lee Buses")
                 .build();
         Mockito.when(tramVehicleRepository.findAll()).thenReturn(List.of(tramVehicleModel));
         //Now do actual test.
         List<VehicleResponse> vehicleResponseList = vehicleService.retrieveAllVehicles();
-        assertEquals(VehicleType.TRAIN, vehicleResponseList.get(0).getVehicleType());
-        assertEquals(VehicleType.BUS, vehicleResponseList.get(1).getVehicleType());
-        assertEquals(VehicleType.TRAM, vehicleResponseList.get(2).getVehicleType());
+        assertEquals("Train", vehicleResponseList.get(0).getVehicleType());
+        assertEquals("Bus", vehicleResponseList.get(1).getVehicleType());
+        assertEquals("Tram", vehicleResponseList.get(2).getVehicleType());
+        //Check that days until next inspection is calculated correctly.
+        assertEquals("Inspected", vehicleResponseList.get(0).getInspectionStatus());
+        assertEquals(2915, vehicleResponseList.get(0).getNextInspectionDueInDays());
+        assertEquals("Inspected", vehicleResponseList.get(1).getInspectionStatus());
+        assertEquals(1089, vehicleResponseList.get(1).getNextInspectionDueInDays());
+        assertEquals("Inspection Due!", vehicleResponseList.get(2).getInspectionStatus());
+        assertEquals(0, vehicleResponseList.get(2).getNextInspectionDueInDays());
+    }
+
+    /**
+     * Ensure that data can be retrieved by searching for fleet number and company name
+     * from the mock database and supplied as a response.
+     */
+    @Test
+    public void testRetrieveVehiclesByCompanyAndFleetNumber() {
+        //Test data.
+        BusVehicleModel busVehicleModel = BusVehicleModel.builder()
+                .registrationNumber("W234DHDF")
+                .modelName("BendyBus 2000")
+                .deliveryDate(LocalDate.of(2021,3,25))
+                .inspectionDate(LocalDate.now().minusDays(7))
+                .livery("Green with black slide")
+                .seatingCapacity(50)
+                .standingCapacity(80)
+                .vehicleStatus(VehicleStatus.DELIVERED)
+                .fleetNumber("213")
+                .company("Lee Buses")
+                .build();
+        Mockito.when(busVehicleRepository.findByCompanyStartsWithAndFleetNumberStartsWith("Lee", "21")).thenReturn(List.of(busVehicleModel));
+        TrainVehicleModel trainVehicleModel = TrainVehicleModel.builder()
+                .powerMode(TrainPowerMode.DIESEL)
+                .modelName("Train 2000 Di")
+                .deliveryDate(LocalDate.of(2021,3,25))
+                .inspectionDate(LocalDate.now().minusDays(7))
+                .livery("Green with black slide")
+                .seatingCapacity(50)
+                .standingCapacity(80)
+                .vehicleStatus(VehicleStatus.DELIVERED)
+                .fleetNumber("213")
+                .company("Lee Buses")
+                .build();
+        Mockito.when(trainVehicleRepository.findByCompanyStartsWithAndFleetNumberStartsWith("Lee", "21")).thenReturn(List.of(trainVehicleModel));
+        TramVehicleModel tramVehicleModel = TramVehicleModel.builder()
+                .isBidirectional(true)
+                .modelName("Tram 2000 Bi")
+                .deliveryDate(LocalDate.of(2021,3,25))
+                .inspectionDate(LocalDate.now().minusDays(7))
+                .livery("Green with black slide")
+                .seatingCapacity(50)
+                .standingCapacity(80)
+                .vehicleStatus(VehicleStatus.DELIVERED)
+                .fleetNumber("213")
+                .company("Lee Buses")
+                .build();
+        Mockito.when(tramVehicleRepository.findByCompanyStartsWithAndFleetNumberStartsWith("Lee", "21")).thenReturn(List.of(tramVehicleModel));
+        //Now do actual test.
+        List<VehicleResponse> vehicleResponseList = vehicleService.retrieveVehiclesByCompanyAndFleetNumber("Lee", "21");
+        assertEquals("Train", vehicleResponseList.get(0).getVehicleType());
+        assertEquals("Bus", vehicleResponseList.get(1).getVehicleType());
+        assertEquals("Tram", vehicleResponseList.get(2).getVehicleType());
     }
 
 }

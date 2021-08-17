@@ -6,10 +6,43 @@ package de.davelee.trams.operations.model;
  */
 public enum VehicleType {
 
-    BUS,
+    BUS {
+        /**
+         * Return the name of the type as a string e.g. Bus
+         * @return a <code>String</code> containing the name of the type.
+         */
+        @Override
+        public String getTypeName() {
+            return "Bus";
+        }
+    },
 
-    TRAIN,
+    TRAIN {
+        /**
+         * Return the name of the type as a string e.g. Train
+         * @return a <code>String</code> containing the name of the type.
+         */
+        @Override
+        public String getTypeName() {
+            return "Train";
+        }
+    },
 
-    TRAM
+    TRAM {
+        /**
+         * Return the name of the type as a string e.g. Tram
+         * @return a <code>String</code> containing the name of the type.
+         */
+        @Override
+        public String getTypeName() {
+            return "Tram";
+        }
+    };
+
+    /**
+     * Return the name of the type as a string e.g. Bus
+     * @return a <code>String</code> containing the name of the type.
+     */
+    public abstract String getTypeName();
 
 }

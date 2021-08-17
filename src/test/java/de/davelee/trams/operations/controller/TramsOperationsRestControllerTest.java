@@ -23,6 +23,7 @@ import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -187,12 +188,29 @@ public class TramsOperationsRestControllerTest {
                 .livery("Green with red text")
                 .fleetNumber("213")
                 .allocatedTour("1/1")
-                .vehicleType(VehicleType.BUS)
+                .vehicleType("Bus")
                 .additionalTypeInformationMap(Collections.singletonMap("Registration Number", "XXX2 BBB"))
                 .build()));
         List<VehicleResponse> vehicleResponseList = controller.getVehicles();
         assertEquals(1, vehicleResponseList.size());
-        assertEquals(VehicleType.BUS, vehicleResponseList.get(0).getVehicleType());
+        assertEquals("Bus", vehicleResponseList.get(0).getVehicleType());
+    }
+
+    /**
+     * Test the retrieve vehicles by company and fleet number endpoint of this controller.
+     */
+    @Test
+    public void testVehiclesByCompanyAndFleetNumberEndpoint() {
+        Mockito.when(vehicleService.retrieveVehiclesByCompanyAndFleetNumber("Lee", "21")).thenReturn(Lists.newArrayList(VehicleResponse.builder()
+                .livery("Green with red text")
+                .fleetNumber("213")
+                .allocatedTour("1/1")
+                .vehicleType("Bus")
+                .additionalTypeInformationMap(Collections.singletonMap("Registration Number", "XXX2 BBB"))
+                .build()));
+        List<VehicleResponse> vehicleResponseList = controller.getVehiclesByCompanyAndFleetNumber(Optional.of("Lee"), "21");
+        assertEquals(1, vehicleResponseList.size());
+        assertEquals("Bus", vehicleResponseList.get(0).getVehicleType());
     }
 
 }
