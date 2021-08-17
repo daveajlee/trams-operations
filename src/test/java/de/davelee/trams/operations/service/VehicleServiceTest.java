@@ -25,7 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * @author Dave Lee
  */
 @SpringBootTest
-@TestPropertySource(properties = { "spring.config.location=classpath:application.properties" })
+@TestPropertySource(properties = { "spring.config.location=classpath:application.yml" })
 public class VehicleServiceTest {
 
     @Value("${bus.inspection.period}")
@@ -120,7 +120,6 @@ public class VehicleServiceTest {
      */
     @Test
     public void testRetrieveAllVehicles() {
-        //Fix mock object to use values from application.properties
         ReflectionTestUtils.setField(vehicleService, "busInspectionPeriodInYears", busInspectionPeriod);
         ReflectionTestUtils.setField(vehicleService, "trainInspectionPeriodInYears", trainInspectionPeriod);
         ReflectionTestUtils.setField(vehicleService, "tramInspectionPeriodInYears", tramInspectionPeriod);
