@@ -3,7 +3,6 @@ package de.davelee.trams.operations.controller;
 import de.davelee.trams.operations.model.RouteModel;
 import de.davelee.trams.operations.model.StopModel;
 import de.davelee.trams.operations.model.StopTimeModel;
-import de.davelee.trams.operations.model.VehicleType;
 import de.davelee.trams.operations.request.ImportZipRequest;
 import de.davelee.trams.operations.response.VehicleResponse;
 import de.davelee.trams.operations.service.*;
@@ -26,7 +25,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.*;
 
 /**
  * This class tests the TramsOperationsRestController and ensures that the endpoints work successfully. It uses
@@ -47,6 +46,9 @@ public class TramsOperationsRestControllerTest {
 
     @Mock
     private ImportGTFSDataService importGTFSDataService;
+
+    @Mock
+    private ImportCSVDataService csvDataService;
 
     @Mock
     private StopService stopService;
@@ -146,6 +148,32 @@ public class TramsOperationsRestControllerTest {
         Mockito.when(importGTFSDataService.readGTFSFile("testFolder", Lists.newArrayList("3C", "3D"))).thenReturn(false);
         ResponseEntity<Void> uploadBadResponse = controller.handleFileUpload(importGtfsZipBadRequest);
         assertEquals(HttpStatus.UNPROCESSABLE_ENTITY, uploadBadResponse.getStatusCode());
+        //Third test the case where a csv file is uploaded.
+        ImportZipRequest importCsvZipRequest = new ImportZipRequest();
+        try {
+            importCsvZipRequest.setZipFile(new MockMultipartFile("test", this.getClass().getResourceAsStream("my-network-landuff/ft1.csv")));
+            importCsvZipRequest.setFileFormat("Comma Separated Value (CSV)");
+            importCsvZipRequest.setValidFromDate("09-08-2020");
+            importCsvZipRequest.setValidToDate("16-08-2020");
+            Mockito.when(fileSystemStorageService.store(importCsvZipRequest.getZipFile())).thenReturn("testCsvFolder");
+            Mockito.when(csvDataService.readCSVFile(anyString(), anyString(), anyString())).thenReturn(true);
+            ResponseEntity<Void> uploadGoodResponse = controller.handleFileUpload(importCsvZipRequest);
+            assertEquals(HttpStatus.OK, uploadGoodResponse.getStatusCode());
+        } catch ( Exception e ) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Test the test date endpoint of this controller.
+     */
+    @Test
+    public void testTestDataEndpoint() {
+        Mockito.when(vehicleService.addBus(any())).thenReturn(true);
+        Mockito.when(vehicleService.addTram(any())).thenReturn(true);
+        Mockito.when(vehicleService.addTram(any())).thenReturn(true);
+        ResponseEntity<Void> responseEntity = controller.addTestData();
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
     }
 
     /**
@@ -208,9 +236,21 @@ public class TramsOperationsRestControllerTest {
                 .vehicleType("Bus")
                 .additionalTypeInformationMap(Collections.singletonMap("Registration Number", "XXX2 BBB"))
                 .build()));
+        //Test case with company.
         List<VehicleResponse> vehicleResponseList = controller.getVehiclesByCompanyAndFleetNumber(Optional.of("Lee"), "21");
         assertEquals(1, vehicleResponseList.size());
         assertEquals("Bus", vehicleResponseList.get(0).getVehicleType());
+        //Test case with fleet number.
+        Mockito.when(vehicleService.retrieveVehiclesByFleetNumber("21")).thenReturn(Lists.newArrayList(VehicleResponse.builder()
+                .livery("Green with red text")
+                .fleetNumber("213")
+                .allocatedTour("1/1")
+                .vehicleType("Bus")
+                .additionalTypeInformationMap(Collections.singletonMap("Registration Number", "XXX2 BBB"))
+                .build()));
+        List<VehicleResponse> vehicleResponseList2 = controller.getVehiclesByCompanyAndFleetNumber(Optional.empty(),"21");
+        assertEquals(1, vehicleResponseList2.size());
+        assertEquals("Bus", vehicleResponseList2.get(0).getVehicleType());
     }
 
 }

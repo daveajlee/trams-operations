@@ -59,7 +59,7 @@ public class ImportCSVDataService {
 
         //Get all csv files in the directory.
         final File directoryPath = directory.startsWith("/") ? new File(directory) :
-                                        new File(ImportGTFSDataService.class.getClassLoader().getResource(directory).getFile());
+                                        new File(ImportCSVDataService.class.getClassLoader().getResource(directory).getFile());
         File[] directoryFiles = directoryPath.listFiles((dir, name) -> name.endsWith(".csv"));
 
         //If there are no csv files in the directory then return false.

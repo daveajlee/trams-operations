@@ -96,6 +96,44 @@ public class StopTimeServiceTest {
     }
 
     /**
+     * Verify that the logic of 3 departures after 22:00 works successfully.
+     */
+    @Test
+    public void testStopTimesAfter2200 ( ) {
+        //Test data
+        Mockito.when(stopTimeRepository.findByStopName("Lakeside")).thenReturn(Lists.newArrayList(
+                createStopTime(LocalTime.of(22,11), LocalTime.of(22,12), "106", 1),
+                createStopTime(LocalTime.of(23,21), LocalTime.of(23,22), "107", 2),
+                createStopTime(LocalTime.of(23,58), LocalTime.of(23,59), "108", 3)
+        ));
+        //Test case 1: 3 Departures in the next 2 hours after 22:00
+        List<StopTimeModel> stopTimeTestList1 = stopTimeService.getDepartures("Lakeside", "22:01");
+        assertEquals(3, stopTimeTestList1.size());
+        assertEquals(1, stopTimeTestList1.get(0).getId());
+        assertEquals(2, stopTimeTestList1.get(1).getId());
+        assertEquals(3, stopTimeTestList1.get(2).getId());
+    }
+
+    /**
+     * Verify that the logic of 3 departures after 22:00 works successfully.
+     */
+    @Test
+    public void testStopTimesAfterDuplicate ( ) {
+        //Test data
+        Mockito.when(stopTimeRepository.findByStopName("Lakeside")).thenReturn(Lists.newArrayList(
+                createStopTime(LocalTime.of(10,21), LocalTime.of(10,22), "107", 2),
+                createStopTime(LocalTime.of(10,21), LocalTime.of(10,22), "107", 2),
+                createStopTime(LocalTime.of(10,58), LocalTime.of(10,59), "108", 3)
+
+        ));
+        //Test case 1: Duplicate departures to be removed
+        List<StopTimeModel> stopTimeTestList1 = stopTimeService.getDepartures("Lakeside", "10:01");
+        assertEquals(2, stopTimeTestList1.size());
+        assertEquals(2, stopTimeTestList1.get(0).getId());
+        assertEquals(3, stopTimeTestList1.get(1).getId());
+    }
+
+    /**
      * Private helper method to create test stop time data.
      * @param arrivalTime a <code>LocalTime</code> object containing the desired arrival time.
      * @param departureTime a <code>LocalTime</code> object containing the desired departure time.

@@ -230,4 +230,57 @@ public class VehicleServiceTest {
         assertEquals("Tram", vehicleResponseList.get(2).getVehicleType());
     }
 
+    /**
+     * Ensure that data can be retrieved by searching for fleet number
+     * from the mock database and supplied as a response.
+     */
+    @Test
+    public void testRetrieveVehiclesByFleetNumber() {
+        //Test data.
+        BusVehicleModel busVehicleModel = BusVehicleModel.builder()
+                .registrationNumber("W234DHDF")
+                .modelName("BendyBus 2000")
+                .deliveryDate(LocalDate.of(2021,3,25))
+                .inspectionDate(LocalDate.now().minusDays(7))
+                .livery("Green with black slide")
+                .seatingCapacity(50)
+                .standingCapacity(80)
+                .vehicleStatus(VehicleStatus.DELIVERED)
+                .fleetNumber("213")
+                .company("Lee Buses")
+                .build();
+        Mockito.when(busVehicleRepository.findByFleetNumberStartsWith("21")).thenReturn(List.of(busVehicleModel));
+        TrainVehicleModel trainVehicleModel = TrainVehicleModel.builder()
+                .powerMode(TrainPowerMode.DIESEL)
+                .modelName("Train 2000 Di")
+                .deliveryDate(LocalDate.of(2021,3,25))
+                .inspectionDate(LocalDate.now().minusDays(7))
+                .livery("Green with black slide")
+                .seatingCapacity(50)
+                .standingCapacity(80)
+                .vehicleStatus(VehicleStatus.DELIVERED)
+                .fleetNumber("213")
+                .company("Lee Buses")
+                .build();
+        Mockito.when(trainVehicleRepository.findByFleetNumberStartsWith("21")).thenReturn(List.of(trainVehicleModel));
+        TramVehicleModel tramVehicleModel = TramVehicleModel.builder()
+                .isBidirectional(true)
+                .modelName("Tram 2000 Bi")
+                .deliveryDate(LocalDate.of(2021,3,25))
+                .inspectionDate(LocalDate.now().minusDays(7))
+                .livery("Green with black slide")
+                .seatingCapacity(50)
+                .standingCapacity(80)
+                .vehicleStatus(VehicleStatus.DELIVERED)
+                .fleetNumber("213")
+                .company("Lee Buses")
+                .build();
+        Mockito.when(tramVehicleRepository.findByFleetNumberStartsWith("21")).thenReturn(List.of(tramVehicleModel));
+        //Now do actual test.
+        List<VehicleResponse> vehicleResponseList = vehicleService.retrieveVehiclesByFleetNumber("21");
+        assertEquals("Train", vehicleResponseList.get(0).getVehicleType());
+        assertEquals("Bus", vehicleResponseList.get(1).getVehicleType());
+        assertEquals("Tram", vehicleResponseList.get(2).getVehicleType());
+    }
+
 }

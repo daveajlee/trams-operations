@@ -97,11 +97,13 @@ public class ImportGTFSDataService {
                             .stopName(stopTime.getStop().getName())
                             .destination(stopTime.getTrip().getTripHeadsign())
                             .routeNumber(stopTime.getTrip().getRoute().getShortName())
-                            .validFromDate(LocalDate.of(serviceCalendar.getStartDate().getYear(), serviceCalendar.getStartDate().getMonth(), serviceCalendar.getStartDate().getDay()))
-                            .validToDate(LocalDate.of(serviceCalendar.getEndDate().getYear(), serviceCalendar.getEndDate().getMonth(), serviceCalendar.getEndDate().getDay()))
-                            .operatingDays(getOperatingDays(serviceCalendar))
                             .journeyNumber(stopTime.getTrip().getId().getId())
                             .build();
+                    if ( serviceCalendar != null ) {
+                        stopTimeModel.setValidFromDate(LocalDate.of(serviceCalendar.getStartDate().getYear(), serviceCalendar.getStartDate().getMonth(), serviceCalendar.getStartDate().getDay()));
+                        stopTimeModel.setValidToDate(LocalDate.of(serviceCalendar.getEndDate().getYear(), serviceCalendar.getEndDate().getMonth(), serviceCalendar.getEndDate().getDay()));
+                        stopTimeModel.setOperatingDays(getOperatingDays(serviceCalendar));
+                    }
                     stopTimeRepository.insert(stopTimeModel);
                     stopTimeCounter++;
                 }

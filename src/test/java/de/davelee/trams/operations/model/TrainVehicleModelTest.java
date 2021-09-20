@@ -59,6 +59,19 @@ public class TrainVehicleModelTest {
         //And verify again through the toString methods
         assertEquals("TrainVehicleModel(powerMode=Electric)", vehicleModel.toString());
         assertEquals("VehicleModel(fleetNumber=214, company=Lee Buses 2, deliveryDate=2021-03-31, inspectionDate=2021-04-05, seatingCapacity=54, standingCapacity=82, modelName=Train 2000 El, livery=Red with plus logo, vehicleStatus=PURCHASED, allocatedTour=)", vehicleModel.toDetailedString());
+        //Verify the test case train mode is steam.
+        vehicleModel.setPowerMode(TrainPowerMode.STEAM);
+        assertEquals(TrainPowerMode.STEAM, vehicleModel.getPowerMode());
+        assertEquals("TrainVehicleModel(powerMode=Steam)", vehicleModel.toString());
+        //Verify the test case train mode is hydrogen.
+        vehicleModel.setPowerMode(TrainPowerMode.HYDROGEN);
+        assertEquals(TrainPowerMode.HYDROGEN, vehicleModel.getPowerMode());
+        assertEquals("TrainVehicleModel(powerMode=Hydrogen)", vehicleModel.toString());
+        //Verify the test case train mode is battery.
+        vehicleModel.setPowerMode(TrainPowerMode.BATTERY);
+        assertEquals(TrainPowerMode.BATTERY, vehicleModel.getPowerMode());
+        assertEquals("TrainVehicleModel(powerMode=Battery)", vehicleModel.toString());
+
     }
 
 }

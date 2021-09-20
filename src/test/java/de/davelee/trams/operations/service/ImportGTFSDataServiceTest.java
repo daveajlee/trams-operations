@@ -2,6 +2,7 @@ package de.davelee.trams.operations.service;
 
 import de.davelee.trams.operations.repository.RouteRepository;
 import de.davelee.trams.operations.repository.StopRepository;
+import de.davelee.trams.operations.repository.StopTimeRepository;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -10,9 +11,11 @@ import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.io.File;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
 
 /**
  * This class tests the ImportGTFSDataService class and ensures that the import work successfully. Mocks are used
@@ -31,6 +34,9 @@ public class ImportGTFSDataServiceTest {
     @Mock
     private StopRepository stopRepository;
 
+    @Mock
+    private StopTimeRepository stopTimeRepository;
+
     /**
      * Verify that it is possible to import the sample feed.
      */
@@ -40,6 +46,7 @@ public class ImportGTFSDataServiceTest {
         Mockito.when(stopRepository.findAll()).thenReturn(Lists.emptyList());
         File file = new File("src/test/resources/sample-feed-1");
         assertTrue(importGTFSDataService.readGTFSFile(file.getAbsolutePath(), Lists.newArrayList()));
+        assertTrue(importGTFSDataService.readGTFSFile(file.getAbsolutePath(), List.of("10", "20")));
         assertFalse(importGTFSDataService.readGTFSFile("no-feed", Lists.newArrayList()));
     }
 }
