@@ -1,21 +1,24 @@
 package de.davelee.trams.operations.service;
 
+import de.davelee.trams.operations.exception.StorageException;
 import de.davelee.trams.operations.repository.RouteRepository;
 import de.davelee.trams.operations.repository.StopRepository;
 import de.davelee.trams.operations.repository.StopTimeRepository;
 import org.assertj.core.util.Lists;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.onebusaway.csv_entities.exceptions.MissingRequiredEntityException;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.mock.web.MockMultipartFile;
 
 import java.io.File;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
 
 /**
  * This class tests the ImportGTFSDataService class and ensures that the import work successfully. Mocks are used
@@ -47,6 +50,8 @@ public class ImportGTFSDataServiceTest {
         File file = new File("src/test/resources/sample-feed-1");
         assertTrue(importGTFSDataService.readGTFSFile(file.getAbsolutePath(), Lists.newArrayList()));
         assertTrue(importGTFSDataService.readGTFSFile(file.getAbsolutePath(), List.of("10", "20")));
+        File zipFile = new File("src/test/resources/sample-feed-1.zip");
+        Assertions.assertThrows(MissingRequiredEntityException.class, () -> importGTFSDataService.readGTFSFile(zipFile.getAbsolutePath(), Lists.newArrayList()));
         assertFalse(importGTFSDataService.readGTFSFile("no-feed", Lists.newArrayList()));
     }
 }

@@ -20,6 +20,7 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * This class provides a service for importing GTFS files which match the GTFS specification: https://developers.google.com/transit/gtfs
@@ -89,7 +90,7 @@ public class ImportGTFSDataService {
                     }
 
                     //Add the StopTime information to the database.
-                    ServiceCalendar serviceCalendar = store.getCalendarForId(Integer.parseInt(stopTime.getTrip().getServiceId().getId()));
+                    List<ServiceCalendar> serviceCalendarList = store.getAllCalendars().stream().filter(sc -> sc.getServiceId().getId().contentEquals(stopTime.getTrip().getServiceId().getId())).collect(Collectors.toList());
                     StopTimeModel stopTimeModel = StopTimeModel.builder()
                             .id(stopTimeCounter)
                             .departureTime(LocalTime.parse(convertTimeToHoursAndMinutes(stopTime.getDepartureTime()), DateTimeFormatter.ofPattern("HH:mm")))
@@ -98,12 +99,10 @@ public class ImportGTFSDataService {
                             .destination(stopTime.getTrip().getTripHeadsign())
                             .routeNumber(stopTime.getTrip().getRoute().getShortName())
                             .journeyNumber(stopTime.getTrip().getId().getId())
+                            .validFromDate( serviceCalendarList.size() == 1 ? LocalDate.of(serviceCalendarList.get(0).getStartDate().getYear(), serviceCalendarList.get(0).getStartDate().getMonth(), serviceCalendarList.get(0).getStartDate().getDay()): null )
+                            .validToDate( serviceCalendarList.size() == 1 ? LocalDate.of(serviceCalendarList.get(0).getEndDate().getYear(), serviceCalendarList.get(0).getEndDate().getMonth(), serviceCalendarList.get(0).getEndDate().getDay()): null )
+                            .operatingDays(serviceCalendarList.size() == 1 ? getOperatingDays(serviceCalendarList.get(0)) : null)
                             .build();
-                    if ( serviceCalendar != null ) {
-                        stopTimeModel.setValidFromDate(LocalDate.of(serviceCalendar.getStartDate().getYear(), serviceCalendar.getStartDate().getMonth(), serviceCalendar.getStartDate().getDay()));
-                        stopTimeModel.setValidToDate(LocalDate.of(serviceCalendar.getEndDate().getYear(), serviceCalendar.getEndDate().getMonth(), serviceCalendar.getEndDate().getDay()));
-                        stopTimeModel.setOperatingDays(getOperatingDays(serviceCalendar));
-                    }
                     stopTimeRepository.insert(stopTimeModel);
                     stopTimeCounter++;
                 }
