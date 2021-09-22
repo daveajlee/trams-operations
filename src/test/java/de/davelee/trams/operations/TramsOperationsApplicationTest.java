@@ -2,6 +2,7 @@ package de.davelee.trams.operations;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 
 /**
  * Simple integration test to ensure 100% test coverage of Spring Boot application.
@@ -9,6 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest;
  * @author Dave Lee
  */
 @SpringBootTest(classes = TramsOperationsApplication.class)
+@ActiveProfiles("test")
 public class TramsOperationsApplicationTest {
 
     /**
