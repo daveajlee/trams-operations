@@ -14,7 +14,7 @@ storage:
     location: src/main/resources/upload-dir
 
 server:
-    port: 8085
+    port: 8104
 eureka:
     client:
         serviceUrl:
